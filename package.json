@@ -7,10 +7,10 @@
     "clean": "rimraf lib",
     "test": "npm run lint && npm run cover",
     "test:prod": "cross-env BABEL_ENV=production npm run test",
-    "test:only": "mocha --require babel-core/register --require babel-polyfill --recursive",
+    "test:only": "mocha --require babel-core/register --require babel-polyfill --recursive --timeout 15000",
     "test:watch": "npm test -- --watch",
     "test:examples": "node examples/",
-    "cover": "istanbul cover _mocha -- --require babel-core/register --require babel-polyfill --recursive",
+    "cover": "istanbul cover _mocha -- --require babel-core/register --require babel-polyfill --recursive --timeout 15000",
     "lint": "eslint src test",
     "build": "cross-env BABEL_ENV=production babel src --out-dir lib",
     "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
@@ -38,6 +38,9 @@
     "url": "https://github.com/ConvertAPI/convertapi-node/issues"
   },
   "homepage": "https://github.com/ConvertAPI/convertapi-node#readme",
+  "dependencies": {
+    "superagent": "^3.8.3"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.1",
