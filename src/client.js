@@ -19,7 +19,7 @@ export default class Client {
       //   // console.log(error.response.req);
       // })
       .type('form')
-      .send(await params)
+      .send(params)
       .then(response => response.body);
   }
 
@@ -35,6 +35,25 @@ export default class Client {
       stream.on('finish', () => {
         stream.close(() => resolve(path));
       });
+    });
+  }
+
+  async upload(stream, fileName) {
+    const encodedFileName = encodeURIComponent(fileName);
+
+    const headers = Object.assign({
+      'Content-Disposition': `attachment; filename*=UTF-8''${encodedFileName}`
+    }, this.defaultHeader);
+
+    return new Promise((resolve) => {
+      const req = request
+        .post(this.url('upload'))
+        .set(headers)
+        .type('octet-stream')
+        .timeout(this.api.uploadTimeout * 1000)
+        .on('response', response => resolve(response.body.FileId));
+
+      stream.pipe(req);
     });
   }
 

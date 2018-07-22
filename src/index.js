@@ -21,6 +21,6 @@ class ConvertAPI {
   }
 }
 
-const init = secret => new ConvertAPI(secret);
+const init = (secret, options = {}) => new ConvertAPI(secret, options);
 
 export default init;

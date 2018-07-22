@@ -1,4 +1,5 @@
 import Result from './result';
+import { buildFileParam } from './utils';
 
 export default class Task {
   constructor(api, fromFormat, toFormat, params, conversionTimeout) {
@@ -15,7 +16,7 @@ export default class Task {
   }
 
   async run() {
-    const params = this.normalizeParams();
+    const params = await this.normalizeParams();
     const path = `convert/${this.fromFormat}/to/${this.toFormat}`;
     const timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
 
@@ -25,12 +26,17 @@ export default class Task {
   }
 
   async normalizeParams() {
-    const result = {};
+    const params = Object.assign({}, this.params, this.defaultParams);
 
-    Object.keys(this.params).forEach((key) => {
-      result[key] = this.params[key];
-    });
+    if (params.File) {
+      params.File = await buildFileParam(this.api, params.File);
+    }
 
-    return Object.assign(result, this.defaultParams);
+    if (params.Files) {
+      const promises = params.Files.map(file => buildFileParam(this.api, file));
+      params.Files = Promise.all(promises);
+    }
+
+    return params;
   }
 }
