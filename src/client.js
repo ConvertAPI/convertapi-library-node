@@ -1,4 +1,5 @@
-const request = require('superagent');
+import request from 'superagent';
+import fs from 'fs';
 
 export default class Client {
   constructor(api) {
@@ -20,6 +21,21 @@ export default class Client {
       .type('form')
       .send(await params)
       .then(response => response.body);
+  }
+
+  async download(url, path) {
+    const stream = fs.createWriteStream(path);
+
+    request
+      .get(url)
+      .timeout(this.api.downloadTimeout * 1000)
+      .pipe(stream);
+
+    return new Promise((resolve) => {
+      stream.on('finish', () => {
+        stream.close(() => resolve(path));
+      });
+    });
   }
 
   url(path) {
