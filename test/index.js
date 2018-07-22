@@ -15,8 +15,8 @@ describe('ConvertAPI', () => {
 
     expect(result.file.url).to.be.a('string');
 
-    const filePath = await result.file.save('/tmp/test.pdf');
+    const files = await result.saveFiles('/tmp');
 
-    expect(filePath).to.equal('/tmp/test.pdf');
+    expect(files[0]).to.be.a('string');
   })
 });
