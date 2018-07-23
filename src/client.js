@@ -1,52 +1,39 @@
-import request from 'request';
+import axios from 'axios';
 import fs from 'fs';
+import qs from 'qs';
 
 export default class Client {
   constructor(api) {
     this.api = api;
     this.defaultHeader = {
       'User-Agent': api.userAgent,
+      'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json',
     };
   }
 
-  async post(path, params, timeout = null) {
-    const options = {
+  post(path, params, timeout = null) {
+    return axios({
+      method: 'post',
       url: this.url(path),
       headers: this.defaultHeader,
-      form: params,
+      data: qs.stringify(params),
       timeout: timeout * 1000,
-      json: true
-    };
+    }).then(response => response.data);
+  }
 
-    return new Promise((resolve, reject) => {
-      request.post(options, (err, _response, body) => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve(body);
-      });
+  download(url, path) {
+    return axios({
+      url,
+      timeout: this.api.downloadTimeout * 1000,
+      responseType: 'stream',
+    }).then((response) => {
+      response.data.pipe(fs.createWriteStream(path));
+      return path;
     });
   }
 
-  async download(url, path) {
-    const stream = fs.createWriteStream(path);
-    const timeout = this.api.downloadTimeout * 1000;
-
-    return new Promise((resolve, reject) => {
-      request
-        .get(url, { timeout })
-        .on('error', err => reject(err))
-        .pipe(stream);
-
-      stream.on('finish', () => {
-        stream.close(() => resolve(path));
-      });
-    });
-  }
-
-  async upload(stream, fileName) {
+  upload(stream, fileName) {
     const encodedFileName = encodeURIComponent(fileName);
 
     const headers = Object.assign({
@@ -54,25 +41,13 @@ export default class Client {
       'Content-Disposition': `attachment; filename*=UTF-8''${encodedFileName}`
     }, this.defaultHeader);
 
-    const options = {
-      headers,
+    return axios({
+      method: 'post',
       url: this.url('upload'),
+      headers,
+      data: stream,
       timeout: this.api.uploadTimeout * 1000,
-      json: true
-    };
-
-    return new Promise((resolve, reject) => {
-      const req = request
-        .post(options, (err, _response, body) => {
-          if (err) {
-            reject(err);
-          }
-
-          resolve(body.FileId);
-        });
-
-      stream.pipe(req);
-    });
+    }).then(response => response.data.FileId);
   }
 
   url(path) {
