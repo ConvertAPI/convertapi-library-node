@@ -11,8 +11,8 @@ describe('ConvertAPI', () => {
   });
 
   it ('should upload file', async () => {
-    const stream = fs.createReadStream('./examples/files/test.docx');
-    const result = await api.client.upload(stream, 'test.docx');
+    const stream = fs.createReadStream('./examples/files/test.pdf');
+    const result = await api.client.upload(stream, 'test.pdf');
 
     expect(result).to.be.a('string');
   });
@@ -33,9 +33,14 @@ describe('ConvertAPI', () => {
     const result = await api.convert('pdf', params, 'web');
 
     expect(result.file.url).to.be.a('string');
+  });
 
-    const files = await result.saveFiles('/tmp');
+  it('should zip multiple files', async () => {
+    const files = ['./examples/files/test.docx', './examples/files/test.pdf'];
+    const params = { Files: files };
 
-    expect(files[0]).to.be.a('string');
+    const result = await api.convert('zip', params);
+
+    expect(result.file.url).to.be.a('string');
   });
 });

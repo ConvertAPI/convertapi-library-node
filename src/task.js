@@ -35,7 +35,7 @@ export default class Task {
 
     if (params.Files) {
       const promises = params.Files.map(file => buildFileParam(this.api, file));
-      params.Files = Promise.all(promises);
+      params.Files = await Promise.all(promises);
     }
 
     return params;

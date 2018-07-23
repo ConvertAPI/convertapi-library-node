@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/ConvertAPI/convertapi-node#readme",
   "dependencies": {
-    "superagent": "^3.8.3"
+    "request": "^2.x"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

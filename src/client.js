@@ -1,4 +1,4 @@
-import request from 'superagent';
+import request from 'request';
 import fs from 'fs';
 
 export default class Client {
@@ -11,27 +11,35 @@ export default class Client {
   }
 
   async post(path, params, timeout = null) {
-    return request
-      .post(this.url(path))
-      .set(this.defaultHeader)
-      .timeout(timeout * 1000)
-      // .on('error', (error) => {
-      //   // console.log(error.response.req);
-      // })
-      .type('form')
-      .send(params)
-      .then(response => response.body);
+    const options = {
+      url: this.url(path),
+      headers: this.defaultHeader,
+      form: params,
+      timeout: timeout * 1000,
+      json: true
+    };
+
+    return new Promise((resolve, reject) => {
+      request.post(options, (err, _response, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(body);
+      });
+    });
   }
 
   async download(url, path) {
     const stream = fs.createWriteStream(path);
+    const timeout = this.api.downloadTimeout * 1000;
 
-    request
-      .get(url)
-      .timeout(this.api.downloadTimeout * 1000)
-      .pipe(stream);
+    return new Promise((resolve, reject) => {
+      request
+        .get(url, { timeout })
+        .on('error', err => reject(err))
+        .pipe(stream);
 
-    return new Promise((resolve) => {
       stream.on('finish', () => {
         stream.close(() => resolve(path));
       });
@@ -42,16 +50,26 @@ export default class Client {
     const encodedFileName = encodeURIComponent(fileName);
 
     const headers = Object.assign({
+      'Content-Type': 'application/octet-stream',
       'Content-Disposition': `attachment; filename*=UTF-8''${encodedFileName}`
     }, this.defaultHeader);
 
-    return new Promise((resolve) => {
+    const options = {
+      headers,
+      url: this.url('upload'),
+      timeout: this.api.uploadTimeout * 1000,
+      json: true
+    };
+
+    return new Promise((resolve, reject) => {
       const req = request
-        .post(this.url('upload'))
-        .set(headers)
-        .type('octet-stream')
-        .timeout(this.api.uploadTimeout * 1000)
-        .on('response', response => resolve(response.body.FileId));
+        .post(options, (err, _response, body) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(body.FileId);
+        });
 
       stream.pipe(req);
     });
