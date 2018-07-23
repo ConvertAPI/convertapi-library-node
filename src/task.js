@@ -1,5 +1,5 @@
 import Result from './result';
-import { buildFileParam } from './utils';
+import { detectFormat, buildFileParam } from './utils';
 
 export default class Task {
   constructor(api, fromFormat, toFormat, params, conversionTimeout) {
@@ -17,7 +17,8 @@ export default class Task {
 
   async run() {
     const params = await this.normalizeParams();
-    const path = `convert/${this.fromFormat}/to/${this.toFormat}`;
+    const fromFormat = this.fromFormat || detectFormat(this.params);
+    const path = `convert/${fromFormat}/to/${this.toFormat}`;
     const timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
 
     const response = await this.api.client.post(path, params, timeout);

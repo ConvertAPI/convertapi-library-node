@@ -19,7 +19,7 @@ describe('ConvertAPI', () => {
 
   it ('should convert file to pdf', async () => {
     const params = { File: './examples/files/test.docx' };
-    const result = await api.convert('pdf', params, 'docx');
+    const result = await api.convert('pdf', params);
 
     expect(result.file.url).to.be.a('string');
 
