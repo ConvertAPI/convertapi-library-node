@@ -28,6 +28,17 @@ describe('ConvertAPI', () => {
     expect(files[0]).to.be.a('string');
   });
 
+  it ('should convert file url to pdf', async () => {
+    const params = { File: 'https://www.w3.org/TR/PNG/iso_8859-1.txt' };
+    const result = await api.convert('pdf', params);
+
+    expect(result.file.url).to.be.a('string');
+
+    const files = await result.saveFiles('/tmp');
+
+    expect(files[0]).to.be.a('string');
+  });
+
   it('should convert url to pdf', async () => {
     const params = { Url: 'http://convertapi.com' };
     const result = await api.convert('pdf', params, 'web');
@@ -42,5 +53,17 @@ describe('ConvertAPI', () => {
     const result = await api.convert('zip', params);
 
     expect(result.file.url).to.be.a('string');
+  });
+
+  it('should perform chained conversion', async () => {
+    const params1 = { File: './examples/files/test.docx' };
+
+    const result1 = await api.convert('pdf', params1);
+
+    const params2 = { Files: result1.files };
+
+    const result2 = await api.convert('zip', params2);
+
+    expect(result2.file.url).to.be.a('string');
   });
 });

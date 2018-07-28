@@ -1,14 +1,13 @@
+import { buildFileParam, detectFormat } from './utils';
 import Result from './result';
-import { detectFormat, buildFileParam } from './utils';
 
-export default class Task {
+const Task = class {
   constructor(api, fromFormat, toFormat, params, conversionTimeout) {
     this.api = api;
     this.fromFormat = fromFormat;
     this.toFormat = toFormat;
-    this.params = params;
     this.conversionTimeout = conversionTimeout || api.conversionTimeout;
-
+    this.params = params;
     this.defaultParams = {
       StoreFile: true,
       Timeout: this.conversionTimeout,
@@ -16,28 +15,31 @@ export default class Task {
   }
 
   async run() {
-    const params = await this.normalizeParams();
-    const fromFormat = this.fromFormat || detectFormat(this.params);
+    const params = await this.normalizeParams(this.params);
+    const fromFormat = this.fromFormat || detectFormat(params);
     const path = `convert/${fromFormat}/to/${this.toFormat}`;
     const timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
-
     const response = await this.api.client.post(path, params, timeout);
 
     return new Result(this.api, response);
   }
 
-  async normalizeParams() {
-    const params = Object.assign({}, this.params, this.defaultParams);
+  async normalizeParams(params) {
+    const result = Object.assign({}, params, this.defaultParams);
 
     if (params.File) {
-      params.File = await buildFileParam(this.api, params.File);
+      const file = await params.File;
+      result.File = await buildFileParam(this.api, file);
     }
 
     if (params.Files) {
-      const promises = params.Files.map(file => buildFileParam(this.api, file));
-      params.Files = await Promise.all(promises);
+      const files = await Promise.all(params.Files);
+      const promises = files.map(file => buildFileParam(this.api, file));
+      result.Files = await Promise.all(promises);
     }
 
-    return params;
+    return result;
   }
-}
+};
+
+export default Task;

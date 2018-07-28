@@ -39,8 +39,7 @@
   },
   "homepage": "https://github.com/ConvertAPI/convertapi-node#readme",
   "dependencies": {
-    "axios": "^0.18.0",
-    "qs": "^6.5.2"
+    "axios": "^0.18.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

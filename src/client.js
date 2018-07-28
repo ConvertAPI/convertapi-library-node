@@ -1,6 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
-import qs from 'qs';
+import { buildQueryString } from './utils';
 
 export default class Client {
   constructor(api) {
@@ -17,7 +17,7 @@ export default class Client {
       method: 'post',
       url: this.url(path),
       headers: this.defaultHeader,
-      data: qs.stringify(params),
+      data: buildQueryString(params),
       timeout: timeout * 1000,
     }).then(response => response.data);
   }

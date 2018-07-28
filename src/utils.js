@@ -1,15 +1,29 @@
-import fs from 'fs';
 import path from 'path';
+import querystring from 'querystring';
+import ResultFile from './result_file';
+import UploadResult from './upload_result';
 
 const URI_REGEXP = /^https?:/i;
 const DEFAULT_URL_FORMAT = 'url';
 
+export const buildFileParam = async (api, value) => {
+  if (URI_REGEXP.test(value)) {
+    return value;
+  }
+
+  if (value instanceof ResultFile) {
+    return value.url;
+  }
+
+  return api.upload(value);
+};
+
 export const detectFormat = (params) => {
+  let resource;
+
   if (params.Url) {
     return DEFAULT_URL_FORMAT;
   }
-
-  let resource;
 
   if (params.File) {
     resource = params.File;
@@ -17,18 +31,31 @@ export const detectFormat = (params) => {
     [resource] = params.Files;
   }
 
+  if (resource instanceof ResultFile) {
+    resource = resource.url;
+  }
+
+  if (resource instanceof UploadResult) {
+    resource = resource.fileName;
+  }
+
   return path.extname(resource).substring(1);
 };
 
-export const buildFileParam = (api, value) => {
-  if (URI_REGEXP.test(value)) {
-    return value;
-  }
+export const buildQueryString = (params) => {
+  const result = {};
 
-  const stream = fs.createReadStream(value);
-  const fileName = path.basename(value);
+  Object.keys(params).forEach((key) => {
+    const val = params[key];
 
-  return api.client.upload(stream, fileName);
+    if (val instanceof Array) {
+      val.forEach((v, i) => {
+        result[`${key}[${i}]`] = v.toString();
+      });
+    } else {
+      result[key] = val.toString();
+    }
+  });
+
+  return querystring.stringify(result);
 };
-
-export default {};
