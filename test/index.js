@@ -88,4 +88,10 @@ describe('ConvertAPI', () => {
 
     expect(promise).to.be.rejectedWith(/timeout/);
   });
+
+  it('fetches user info', () => {
+    const result = api.user();
+
+    expect(result).to.eventually.have.property('SecondsLeft');
+  });
 });

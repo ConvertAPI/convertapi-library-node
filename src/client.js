@@ -13,6 +13,18 @@ export default class Client {
     };
   }
 
+  get(path, params = {}, timeout = null) {
+    return axios({
+      method: 'get',
+      url: this.url(path),
+      headers: this.defaultHeader,
+      params,
+      timeout: timeout * 1000,
+    }).then(response => response.data).catch((error) => {
+      throw new Error(error, error.response.data);
+    });
+  }
+
   post(path, params, timeout = null) {
     return axios({
       method: 'post',

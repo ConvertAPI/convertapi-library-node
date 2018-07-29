@@ -30,6 +30,10 @@ class ConvertAPI {
 
     return new UploadResult(fileId, resolvedFileName);
   }
+
+  async user() {
+    return this.client.get('user');
+  }
 }
 
 const init = (secret, options = {}) => new ConvertAPI(secret, options);
