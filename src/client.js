@@ -1,6 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import { buildQueryString } from './utils';
+import Error from './error';
 
 export default class Client {
   constructor(api) {
@@ -19,7 +20,9 @@ export default class Client {
       headers: this.defaultHeader,
       data: buildQueryString(params),
       timeout: timeout * 1000,
-    }).then(response => response.data);
+    }).then(response => response.data).catch((error) => {
+      throw new Error(error, error.response.data);
+    });
   }
 
   download(url, path) {
@@ -30,6 +33,8 @@ export default class Client {
     }).then((response) => {
       response.data.pipe(fs.createWriteStream(path));
       return path;
+    }).catch((error) => {
+      throw new Error(error);
     });
   }
 
@@ -47,7 +52,9 @@ export default class Client {
       headers,
       data: stream,
       timeout: this.api.uploadTimeout * 1000,
-    }).then(response => response.data.FileId);
+    }).then(response => response.data.FileId).catch((error) => {
+      throw new Error(error);
+    });
   }
 
   url(path) {

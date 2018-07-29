@@ -1,7 +1,11 @@
-import { expect } from 'chai';
-import ConvertAPI from '../src';
 import fs from 'fs';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import ConvertAPI from '../src';
 
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
 const api = ConvertAPI(process.env.CONVERT_API_SECRET);
 
 describe('ConvertAPI', () => {
@@ -10,11 +14,11 @@ describe('ConvertAPI', () => {
     expect(api.secret).to.equal(expectedVal);
   });
 
-  it ('should upload file', async () => {
+  it ('should upload file', () => {
     const stream = fs.createReadStream('./examples/files/test.pdf');
-    const result = await api.client.upload(stream, 'test.pdf');
+    const result = api.client.upload(stream, 'test.pdf');
 
-    expect(result).to.be.a('string');
+    expect(result).to.eventually.be.a('string');
   });
 
   it ('should convert file to pdf', async () => {
@@ -65,5 +69,23 @@ describe('ConvertAPI', () => {
     const result2 = await api.convert('zip', params2);
 
     expect(result2.file.url).to.be.a('string');
+  });
+
+  it('should handle api errors', () => {
+    const params = { Url: 'https://www.w3.org/TR/PNG/iso_8859-1.txt' };
+
+    const promise = api.convert('pdf', params, 'web', 600);
+
+    expect(promise).to.be.rejectedWith(/Parameter validation error/);
+  });
+
+  it('should handle client errors', () => {
+    const fastApi = ConvertAPI(process.env.CONVERT_API_SECRET, { uploadTimeout: 0.0001 });
+
+    const params = { File: './examples/files/test.docx' };
+
+    const promise = fastApi.convert('pdf', params);
+
+    expect(promise).to.be.rejectedWith(/timeout/);
   });
 });
