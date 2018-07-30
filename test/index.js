@@ -39,6 +39,18 @@ describe('ConvertAPI', () => {
     expect(files[0]).to.be.a('string');
   });
 
+  it ('should convert file to pdf with uploaded file', async () => {
+    const upload = api.upload('./examples/files/test.docx');
+    const params = { File: upload };
+    const result = await api.convert('pdf', params);
+
+    expect(result.file.url).to.be.a('string');
+
+    const files = await result.saveFiles('/tmp');
+
+    expect(files[0]).to.be.a('string');
+  });
+
   it ('should convert file url to pdf', async () => {
     const params = { File: 'https://www.w3.org/TR/PNG/iso_8859-1.txt' };
     const result = await api.convert('pdf', params);

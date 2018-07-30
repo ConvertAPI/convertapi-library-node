@@ -17,6 +17,10 @@ export const buildFileParam = async (api, value) => {
     return value.url;
   }
 
+  if (value instanceof UploadResult) {
+    return value;
+  }
+
   return api.upload(value);
 };
 
