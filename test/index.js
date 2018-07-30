@@ -15,10 +15,17 @@ describe('ConvertAPI', () => {
   });
 
   it ('should upload file', () => {
-    const stream = fs.createReadStream('./examples/files/test.pdf');
-    const result = api.client.upload(stream, 'test.pdf');
+    const file = './examples/files/test.pdf';
+    const result = api.upload(file);
 
-    expect(result).to.eventually.be.a('string');
+    return expect(result).to.eventually.have.property('fileId');
+  });
+
+  it ('should upload stream', () => {
+    const stream = fs.createReadStream('./examples/files/test.pdf');
+    const result = api.upload(stream, 'test.pdf');
+
+    return expect(result).to.eventually.have.property('fileId');
   });
 
   it ('should convert file to pdf', async () => {
@@ -92,6 +99,6 @@ describe('ConvertAPI', () => {
   it('fetches user info', () => {
     const result = api.user();
 
-    expect(result).to.eventually.have.property('SecondsLeft');
+    return expect(result).to.eventually.have.property('SecondsLeft');
   });
 });

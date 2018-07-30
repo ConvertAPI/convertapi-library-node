@@ -1,9 +1,9 @@
-import fs from 'fs';
 import path from 'path';
 import pkg from '../package.json';
 import Task from './task';
 import Client from './client';
 import UploadResult from './upload_result';
+import { getReadableStream } from './utils';
 
 class ConvertAPI {
   constructor(secret, options = {}) {
@@ -23,16 +23,16 @@ class ConvertAPI {
     return task.run();
   }
 
+  async user() {
+    return this.client.get('user');
+  }
+
   async upload(source, fileName = null) {
     const resolvedFileName = fileName || path.basename(source);
-    const stream = fs.createReadStream(source);
+    const stream = getReadableStream(source);
     const fileId = await this.client.upload(stream, resolvedFileName);
 
     return new UploadResult(fileId, resolvedFileName);
-  }
-
-  async user() {
-    return this.client.get('user');
   }
 }
 

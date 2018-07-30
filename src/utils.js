@@ -1,5 +1,7 @@
 import path from 'path';
 import querystring from 'querystring';
+import fs from 'fs';
+import stream from 'stream';
 import ResultFile from './result_file';
 import UploadResult from './upload_result';
 
@@ -58,4 +60,12 @@ export const buildQueryString = (params) => {
   });
 
   return querystring.stringify(result);
+};
+
+export const getReadableStream = (source) => {
+  if (source instanceof stream.Readable) {
+    return source;
+  }
+
+  return fs.createReadStream(source);
 };
