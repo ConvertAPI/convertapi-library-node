@@ -2,15 +2,30 @@ import path from 'path';
 import querystring from 'querystring';
 import fs from 'fs';
 import stream from 'stream';
+import Result from './result';
 import ResultFile from './result_file';
 import UploadResult from './upload_result';
 
 const URI_REGEXP = /^https?:/i;
 const DEFAULT_URL_FORMAT = 'url';
 
+export const normalizeFilesParam = async (promise) => {
+  const value = await promise;
+
+  if (value instanceof Result) {
+    return value.files;
+  }
+
+  return Promise.all(value);
+};
+
 export const buildFileParam = async (api, value) => {
   if (URI_REGEXP.test(value)) {
     return value;
+  }
+
+  if (value instanceof Result) {
+    return value.file.url;
   }
 
   if (value instanceof ResultFile) {

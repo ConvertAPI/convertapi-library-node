@@ -1,4 +1,4 @@
-import { buildFileParam, detectFormat } from './utils';
+import { normalizeFilesParam, buildFileParam, detectFormat } from './utils';
 import Result from './result';
 
 const Task = class {
@@ -33,7 +33,7 @@ const Task = class {
     }
 
     if (params.Files) {
-      const files = await Promise.all(params.Files);
+      const files = await normalizeFilesParam(params.Files);
       const promises = files.map(file => buildFileParam(this.api, file));
       result.Files = await Promise.all(promises);
     }
