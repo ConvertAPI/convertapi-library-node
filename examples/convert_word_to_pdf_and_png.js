@@ -14,7 +14,7 @@ var upload = convertapi.upload('./examples/files/test.docx');
 
 convertapi.convert('pdf', { File: upload }).then(function(result) {
   result.saveFiles(dir).then(function(files) {
-    console.log("The PDF saved to " + files);
+    console.log("The PDF saved to\n" + files);
   });
 });
 

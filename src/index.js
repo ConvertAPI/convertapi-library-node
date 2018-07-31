@@ -23,7 +23,7 @@ class ConvertAPI {
     return task.run();
   }
 
-  async user() {
+  async getUser() {
     return this.client.get('user');
   }
 
