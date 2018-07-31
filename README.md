@@ -49,7 +49,7 @@ convertapi.convert('pdf', { File: '/path/to/my_file.docx' }).then(function(resul
 
   // save to file
   result.file.save('/path/to/save/file.pdf').then(function(file) {
-    console.log("File saved to " + file);
+    console.log("File saved: " + file);
   });
 });
 ```
@@ -59,7 +59,7 @@ Other result operations:
 ```javascript
 // save all result files to folder
 result.saveFiles('/path/to/save/files').then(function(files) {
-  console.log("Files saved to " + files);
+  console.log("Files saved: " + files);
 });
 
 // get conversion cost
