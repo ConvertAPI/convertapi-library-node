@@ -37,16 +37,25 @@ export default class Client {
     });
   }
 
-  download(url, path) {
-    return axios({
+  async download(url, path) {
+    const response = await axios({
       url,
       timeout: this.api.downloadTimeout * 1000,
       responseType: 'stream',
-    }).then((response) => {
-      response.data.pipe(fs.createWriteStream(path));
-      return path;
     }).catch((error) => {
       throw new Error(error);
+    });
+
+    response.data.pipe(fs.createWriteStream(path));
+
+    return new Promise((resolve, reject) => {
+      response.data.on('end', () => {
+        resolve(path);
+      });
+
+      response.data.on('error', (error) => {
+        reject(new Error(error));
+      });
     });
   }
 

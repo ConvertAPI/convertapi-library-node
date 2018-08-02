@@ -21,9 +21,8 @@ export default class ResultFile {
 
   async save(filePath) {
     let downloadPath;
-    const stat = fs.statSync(filePath);
 
-    if (stat.isDirectory()) {
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
       downloadPath = filePath + path.sep + this.fileName;
     } else {
       downloadPath = filePath;

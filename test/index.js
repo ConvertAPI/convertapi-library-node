@@ -1,9 +1,10 @@
 import fs from 'fs';
 import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+
 import ConvertAPI from '../src';
 
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
+chai.use(require('chai-fs'));
 
 const expect = chai.expect;
 const api = ConvertAPI(process.env.CONVERT_API_SECRET);
@@ -36,7 +37,18 @@ describe('ConvertAPI', () => {
 
     const files = await result.saveFiles('/tmp');
 
-    expect(files[0]).to.be.a('string');
+    expect(files[0]).to.be.a.file().and.not.empty;
+
+    files.map(file => fs.unlinkSync(file));
+
+    // test saving multiple times
+    const file1 = await result.files[0].save('/tmp');
+    expect(file1).to.be.a.file().and.not.empty;
+    fs.unlinkSync(file1);
+
+    const file2 = await result.files[0].save('/tmp/convertapi-node-test-' + process.hrtime().join(''));
+    expect(file2).to.be.a.file().and.not.empty;
+    fs.unlinkSync(file2);
   });
 
   it ('should convert file to pdf with uploaded file', async () => {
@@ -45,10 +57,6 @@ describe('ConvertAPI', () => {
     const result = await api.convert('pdf', params);
 
     expect(result.file.url).to.be.a('string');
-
-    const files = await result.saveFiles('/tmp');
-
-    expect(files[0]).to.be.a('string');
   });
 
   it ('should convert file url to pdf', async () => {
@@ -56,10 +64,6 @@ describe('ConvertAPI', () => {
     const result = await api.convert('pdf', params);
 
     expect(result.file.url).to.be.a('string');
-
-    const files = await result.saveFiles('/tmp');
-
-    expect(files[0]).to.be.a('string');
   });
 
   it('should convert url to pdf', async () => {
