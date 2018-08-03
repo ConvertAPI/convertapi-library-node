@@ -12,15 +12,19 @@ var dir = require('os').tmpdir();
 // Upload to the API only once
 var upload = convertapi.upload('./examples/files/test.docx');
 
-convertapi.convert('pdf', { File: upload }).then(function(result) {
-  result.saveFiles(dir).then(function(files) {
+convertapi.convert('pdf', { File: upload })
+  .then(function(result) {
+    return result.saveFiles(dir);
+  })
+  .then(function(files) {
     console.log("The PDF saved to\n" + files);
   });
-});
 
 // Reuse the same uploaded file
-convertapi.convert('png', { File: upload }).then(function(result) {
-  result.saveFiles(dir).then(function(files) {
+convertapi.convert('png', { File: upload })
+  .then(function(result) {
+    return result.saveFiles(dir);
+  })
+  .then(function(files) {
     console.log("The PNG saved to\n" + files);
   });
-});

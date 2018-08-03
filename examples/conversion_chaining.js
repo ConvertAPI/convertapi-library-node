@@ -10,10 +10,13 @@ var dir = require('os').tmpdir();
 
 console.log("Converting PDF to JPG and compressing result files with ZIP\n");
 
-var jpgResultPromise = convertapi.convert('jpg', { File: './examples/files/test.pdf' });
-
-convertapi.convert('zip', { Files: jpgResultPromise }).then(function(zipResult) {
-  zipResult.saveFiles(dir).then(function(files) {
+convertapi.convert('jpg', { File: './examples/files/test.pdf' })
+  .then(function(jpgResult) {
+    return convertapi.convert('zip', { Files: jpgResult });
+  })
+  .then(function(zipResult) {
+    return zipResult.saveFiles(dir);
+  })
+  .then(function(files) {
     console.log("Files saved to\n" + files);
   });
-});

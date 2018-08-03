@@ -21,9 +21,7 @@ convertapi.convert('jpg', {
   ImageHeight: 300,
   ImageWidth: 300
 }).then(function(jpgResult) {
-
-  jpgResult.saveFiles(dir).then(function(files) {
-    console.log("The thumbnail saved to\n" + files);
-  });
-
+  return jpgResult.saveFiles(dir);
+}).then(function(files) {
+  console.log("The thumbnail saved to\n" + files);
 });

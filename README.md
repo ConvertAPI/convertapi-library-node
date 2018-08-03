@@ -43,15 +43,17 @@ Example to convert file to PDF. All supported formats and options can be found
 [here](https://www.convertapi.com).
 
 ```javascript
-convertapi.convert('pdf', { File: '/path/to/my_file.docx' }).then(function(result) {
-  // get converted file url
-  console.log("Converted file url: " + result.file.url);
+convertapi.convert('pdf', { File: '/path/to/my_file.docx' })
+  .then(function(result) {
+    // get converted file url
+    console.log("Converted file url: " + result.file.url);
 
-  // save to file
-  result.file.save('/path/to/save/file.pdf').then(function(file) {
+    // save to file
+    return result.file.save('/path/to/save/file.pdf');
+  })
+  .then(function(file) {
     console.log("File saved: " + file);
   });
-});
 ```
 
 Other result operations:

@@ -15,8 +15,10 @@ var params = {
   FileName: 'web-example'
 };
 
-convertapi.convert('pdf', params, fromFormat, conversionTimeout).then(function(result) {
-  result.saveFiles(dir).then(function(files) {
+convertapi.convert('pdf', params, fromFormat, conversionTimeout)
+  .then(function(result) {
+    return result.saveFiles(dir);
+  })
+  .then(function(files) {
     console.log("The web page PDF saved to\n" + files);
   });
-});

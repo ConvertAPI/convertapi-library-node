@@ -95,15 +95,11 @@ describe('ConvertAPI', () => {
   });
 
   it('should perform chained conversion with result files', async () => {
-    const params1 = { File: './examples/files/test.docx' };
+    const result = await api
+      .convert('pdf', { File: './examples/files/test.docx' })
+      .then(pdfResult => api.convert('zip', { Files: pdfResult.files }));
 
-    const result1 = await api.convert('pdf', params1);
-
-    const params2 = { Files: result1.files };
-
-    const result2 = await api.convert('zip', params2);
-
-    expect(result2.file.url).to.be.a('string');
+    expect(result.file.url).to.be.a('string');
   });
 
   it('should handle api errors', () => {
