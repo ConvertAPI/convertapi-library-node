@@ -1,5 +1,6 @@
 # ConvertAPI Node.js Client
 
+[![npm version](https://badge.fury.io/js/%40convertapi%2Fconvertapi.svg)](https://badge.fury.io/js/%40convertapi%2Fconvertapi)
 [![Build Status](https://travis-ci.org/ConvertAPI/convertapi-node.svg)](https://travis-ci.org/ConvertAPI/convertapi-node)
 [![dependencies Status](https://david-dm.org/ConvertAPI/convertapi-node/status.svg)](https://david-dm.org/ConvertAPI/convertapi-node)
 [![devDependencies Status](https://david-dm.org/ConvertAPI/convertapi-node/dev-status.svg)](https://david-dm.org/ConvertAPI/convertapi-node?type=dev)
