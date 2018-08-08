@@ -1,5 +1,5 @@
 {
-  "name": "convertapi",
+  "name": "@convertapi/convertapi",
   "version": "1.0.0",
   "description": "Official convertapi.com API client",
   "main": "./lib/index.js",
