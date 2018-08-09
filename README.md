@@ -17,7 +17,7 @@ Node.js v6.0 and later.
 ## Installation
 
 ```sh
-npm install @convertapi/convertapi --save
+npm install convertapi --save
 ```
 
 ## Usage
@@ -27,13 +27,13 @@ The package needs to be configured with your account's secret key which is avail
 Require it with the key's value:
 
 ```javascript
-var convertapi = require('@convertapi/convertapi')('YOUR-API-SECRET');
+var convertapi = require('convertapi')('YOUR-API-SECRET');
 ```
 
 Or using ES modules:
 
 ```javascript
-import convertapiPackage from '@convertapi/convertapi';
+import convertapiPackage from 'convertapi';
 
 const convertapi = convertapiPackage('YOUR-API-SECRET');
 ```
