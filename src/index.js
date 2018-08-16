@@ -13,7 +13,7 @@ class ConvertAPI {
     this.conversionTimeoutDelta = options.conversionTimeoutDelta || 10;
     this.uploadTimeout = options.uploadTimeout || 600;
     this.downloadTimeout = options.downloadTimeout || 600;
-    this.userAgent = `convertapi-node-${pkg.version}`;
+    this.userAgent = `ConvertAPI-Node/${pkg.version}`;
 
     this.client = new Client(this);
   }
