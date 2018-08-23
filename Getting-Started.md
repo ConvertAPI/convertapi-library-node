@@ -27,7 +27,7 @@ The package needs to be configured with your account's secret key which is avail
 Require it with the key's value:
 
 ```javascript
-var convertapi = require('convertapi')('YOUR-API-SECRET');
+var convertapi = require('convertapi')('your api secret');
 ```
 
 Or using ES modules:
@@ -35,7 +35,7 @@ Or using ES modules:
 ```javascript
 import convertapiPackage from 'convertapi';
 
-const convertapi = convertapiPackage('YOUR-API-SECRET');
+const convertapi = convertapiPackage('your api secret');
 ```
 
 ### File conversion
