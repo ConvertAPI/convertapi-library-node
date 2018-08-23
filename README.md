@@ -35,7 +35,7 @@ Or using ES modules:
 ```javascript
 import convertapiPackage from 'convertapi';
 
-const convertapi = convertapiPackage('YOUR-API-SECRET');
+const convertapi = convertapiPackage('your api secret');
 ```
 
 ### File conversion
