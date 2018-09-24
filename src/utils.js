@@ -58,7 +58,7 @@ export const detectFormat = (params) => {
   }
 
   if (resource instanceof UploadResult) {
-    resource = resource.fileName;
+    return resource.fileExt;
   }
 
   const { pathname } = url.parse(resource);

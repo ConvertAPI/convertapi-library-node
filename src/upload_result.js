@@ -1,7 +1,8 @@
 export default class UploadResult {
-  constructor(fileId, fileName) {
-    this.fileId = fileId;
-    this.fileName = fileName;
+  constructor(result) {
+    this.fileId = result.FileId;
+    this.fileName = result.FileName;
+    this.fileExt = result.FileExt;
   }
 
   toString() {
