@@ -2,7 +2,6 @@ import path from 'path';
 import pkg from '../package.json';
 import Task from './task';
 import Client from './client';
-import UploadResult from './upload_result';
 import { getReadableStream } from './utils';
 
 class ConvertAPI {
@@ -30,9 +29,8 @@ class ConvertAPI {
   async upload(source, fileName = null) {
     const resolvedFileName = fileName || path.basename(source);
     const stream = getReadableStream(source);
-    const fileId = await this.client.upload(stream, resolvedFileName);
 
-    return new UploadResult(fileId, resolvedFileName);
+    return this.client.upload(stream, resolvedFileName);
   }
 }
 

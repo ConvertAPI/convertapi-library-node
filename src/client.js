@@ -1,6 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import { buildQueryString } from './utils';
+import UploadResult from './upload_result';
 import Error from './error';
 
 export default class Client {
@@ -73,9 +74,10 @@ export default class Client {
       headers,
       data: stream,
       timeout: this.api.uploadTimeout * 1000,
-    }).then(response => response.data.FileId).catch((error) => {
-      throw new Error(error);
-    });
+    }).then(response => new UploadResult(response.data))
+      .catch((error) => {
+        throw new Error(error);
+      });
   }
 
   url(path) {

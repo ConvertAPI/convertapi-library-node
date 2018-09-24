@@ -1,4 +1,5 @@
 import path from 'path';
+import url from 'url';
 import querystring from 'querystring';
 import fs from 'fs';
 import stream from 'stream';
@@ -57,10 +58,12 @@ export const detectFormat = (params) => {
   }
 
   if (resource instanceof UploadResult) {
-    resource = resource.fileName;
+    return resource.fileExt;
   }
 
-  return path.extname(resource).substring(1);
+  const { pathname } = url.parse(resource);
+
+  return path.extname(pathname).substring(1);
 };
 
 export const buildQueryString = (params) => {
