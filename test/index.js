@@ -60,7 +60,7 @@ describe('ConvertAPI', () => {
   });
 
   it ('should convert file url to pdf', async () => {
-    const params = { File: 'https://www.w3.org/TR/PNG/iso_8859-1.txt' };
+    const params = { File: 'https://cdn.convertapi.com/cara/testfiles/document.docx?test=1' };
     const result = await api.convert('pdf', params);
 
     expect(result.file.url).to.be.a('string');
