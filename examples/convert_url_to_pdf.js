@@ -21,4 +21,7 @@ convertapi.convert('pdf', params, fromFormat, conversionTimeout)
   })
   .then(function(files) {
     console.log("The web page PDF saved to\n" + files);
+  })
+  .catch(function(e) {
+    console.log("ERROR: " + e.data.Message);
   });
