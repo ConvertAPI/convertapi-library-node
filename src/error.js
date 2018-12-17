@@ -2,7 +2,7 @@ export default class ClientError extends Error {
   constructor(error, data = null) {
     let message;
 
-    if (data) {
+    if (data && data.Message) {
       message = `${data.Message} Code: ${data.Code}`;
 
       if (data.InvalidParameters) {
