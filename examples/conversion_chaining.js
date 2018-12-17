@@ -19,4 +19,7 @@ convertapi.convert('jpg', { File: './examples/files/test.pdf' })
   })
   .then(function(files) {
     console.log("Files saved to\n" + files);
+  })
+  .catch(function(e) {
+    console.log(e.toString());
   });

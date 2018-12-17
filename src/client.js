@@ -15,37 +15,42 @@ export default class Client {
   }
 
   get(path, params = {}, timeout = null) {
-    return axios({
+    const options = {
       method: 'get',
       url: this.url(path),
       headers: this.defaultHeader,
       params,
       timeout: timeout * 1000,
-    }).then(response => response.data).catch((error) => {
-      throw new Error(error, error.response.data);
-    });
+    };
+
+    return axios(options)
+      .then(response => response.data)
+      .catch(error => Client.handleError(error));
   }
 
   post(path, params, timeout = null) {
-    return axios({
+    const options = {
       method: 'post',
       url: this.url(path),
       headers: this.defaultHeader,
       data: buildQueryString(params),
       timeout: timeout * 1000,
-    }).then(response => response.data).catch((error) => {
-      throw new Error(error, error.response.data);
-    });
+    };
+
+    return axios(options)
+      .then(response => response.data)
+      .catch(error => Client.handleError(error));
   }
 
   async download(url, path) {
-    const response = await axios({
+    const options = {
       url,
       timeout: this.api.downloadTimeout * 1000,
       responseType: 'stream',
-    }).catch((error) => {
-      throw new Error(error);
-    });
+    };
+
+    const response = await axios(options)
+      .catch(error => Client.handleError(error));
 
     response.data.pipe(fs.createWriteStream(path));
 
@@ -68,19 +73,30 @@ export default class Client {
       'Content-Disposition': `attachment; filename*=UTF-8''${encodedFileName}`
     }, this.defaultHeader);
 
-    return axios({
+    const options = {
       method: 'post',
       url: this.url('upload'),
       headers,
       data: stream,
       timeout: this.api.uploadTimeout * 1000,
-    }).then(response => new UploadResult(response.data))
-      .catch((error) => {
-        throw new Error(error);
-      });
+    };
+
+    return axios(options)
+      .then(response => new UploadResult(response.data))
+      .catch(error => Client.handleError(error));
   }
 
   url(path) {
     return `${this.api.baseUri}${path}?secret=${this.api.secret}`;
+  }
+
+  static handleError(error) {
+    let data;
+
+    if (error.response && error.response.data) {
+      ({ data } = error.response);
+    }
+
+    throw new Error(error, data);
   }
 }

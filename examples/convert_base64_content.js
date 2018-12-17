@@ -28,4 +28,7 @@ convertapi.convert('pdf', { File: uploadResult })
   })
   .then(function(files) {
     console.log("The PDF saved to\n" + files);
+  })
+  .catch(function(e) {
+    console.log(e.toString());
   });
