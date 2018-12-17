@@ -7,7 +7,7 @@ import { getReadableStream } from './utils';
 class ConvertAPI {
   constructor(secret, options = {}) {
     this.secret = secret;
-    this.baseUri = options.baseUri || 'https://v2.convertapi.com/';
+    this.baseUri = options.baseUri || 'https://v2.convertapi.com';
     this.conversionTimeout = options.conversionTimeout || 180;
     this.conversionTimeoutDelta = options.conversionTimeoutDelta || 10;
     this.uploadTimeout = options.uploadTimeout || 600;
