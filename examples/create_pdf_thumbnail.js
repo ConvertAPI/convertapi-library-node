@@ -15,13 +15,18 @@ var pdfResultPromise = convertapi.convert('extract', {
 });
 
 convertapi.convert('jpg', {
-  File: pdfResultPromise,
-  ScaleImage: true,
-  ScaleProportions: true,
-  ImageHeight: 300,
-  ImageWidth: 300
-}).then(function(jpgResult) {
-  return jpgResult.saveFiles(dir);
-}).then(function(files) {
-  console.log("The thumbnail saved to\n" + files);
-});
+    File: pdfResultPromise,
+    ScaleImage: true,
+    ScaleProportions: true,
+    ImageHeight: 300,
+    ImageWidth: 300
+  })
+  .then(function(jpgResult) {
+    return jpgResult.saveFiles(dir);
+  })
+  .then(function(files) {
+    console.log("The thumbnail saved to\n" + files);
+  })
+  .catch(function(e) {
+    console.log(e.toString());
+  });
