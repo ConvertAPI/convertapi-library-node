@@ -109,7 +109,7 @@ convertapi.getUser().then(function(info) {
 
 ### More examples
 
-You can find more advanced examples in the [examples/](examples) folder.
+You can find more advanced examples in the [examples/](https://github.com/ConvertAPI/convertapi-node/tree/master/examples) folder.
 
 ## Development Commands
 
