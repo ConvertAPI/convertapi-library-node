@@ -78,6 +78,7 @@ export default class Client {
       url: this.url('upload'),
       headers,
       data: stream,
+      maxContentLength: Infinity,
       timeout: this.api.uploadTimeout * 1000,
     };
 
