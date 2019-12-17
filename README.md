@@ -38,6 +38,24 @@ import convertapiPackage from 'convertapi';
 const convertapi = convertapiPackage('your-api-secret');
 ```
 
+You can specify aditional options, like proxy configuration and timeouts, when initializing the client:
+
+```javascript
+var convertapi = require('convertapi')('your-api-secret', {
+  conversionTimeout: 60,
+  uploadTimeout: 60,
+  downloadTimeout: 60,
+  proxy: {
+    host: '127.0.0.1',
+    port: 9000,
+    auth: {
+      username: 'testuser',
+      password: 'secret'
+    }
+  }
+});
+```
+
 ### File conversion
 
 Example to convert file to PDF. All supported formats and options can be found

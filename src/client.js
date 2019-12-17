@@ -21,6 +21,7 @@ export default class Client {
       headers: this.defaultHeader,
       params,
       timeout: timeout * 1000,
+      proxy: this.api.proxy,
     };
 
     return axios(options)
@@ -35,6 +36,7 @@ export default class Client {
       headers: this.defaultHeader,
       data: buildQueryString(params),
       timeout: timeout * 1000,
+      proxy: this.api.proxy,
     };
 
     return axios(options)
@@ -46,6 +48,7 @@ export default class Client {
     const options = {
       url,
       timeout: this.api.downloadTimeout * 1000,
+      proxy: this.api.proxy,
       responseType: 'stream',
     };
 
@@ -80,6 +83,7 @@ export default class Client {
       data: stream,
       maxContentLength: Infinity,
       timeout: this.api.uploadTimeout * 1000,
+      proxy: this.api.proxy,
     };
 
     return axios(options)
