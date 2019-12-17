@@ -2,8 +2,6 @@
 
 [![npm version](https://badge.fury.io/js/convertapi.svg)](https://badge.fury.io/js/convertapi)
 [![Build Status](https://travis-ci.org/ConvertAPI/convertapi-node.svg)](https://travis-ci.org/ConvertAPI/convertapi-node)
-[![dependencies Status](https://david-dm.org/ConvertAPI/convertapi-node/status.svg)](https://david-dm.org/ConvertAPI/convertapi-node)
-[![devDependencies Status](https://david-dm.org/ConvertAPI/convertapi-node/dev-status.svg)](https://david-dm.org/ConvertAPI/convertapi-node?type=dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Convert your files with our online file conversion API
