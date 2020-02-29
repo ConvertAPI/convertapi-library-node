@@ -12,6 +12,8 @@ export default class ClientError extends Error {
 
     super(message || error.message);
 
+    this.request = error.request;
+    this.response = error.response;
     this.data = data;
   }
 }

@@ -20,7 +20,7 @@ convertapi.convert('pdf', { File: upload })
     console.log("The PDF saved to\n" + files);
   })
   .catch(function(e) {
-    console.log(e.toString());
+    console.error(e.toString());
   });
 
 // Reuse the same uploaded file
@@ -32,5 +32,5 @@ convertapi.convert('png', { File: upload })
     console.log("The PNG saved to\n" + files);
   })
   .catch(function(e) {
-    console.log(e.toString());
+    console.error(e.toString());
   });

@@ -70,6 +70,9 @@ convertapi.convert('pdf', { File: '/path/to/my_file.docx' })
   })
   .then(function(file) {
     console.log("File saved: " + file);
+  })
+  .catch(function(e) {
+    console.error(e.toString());
   });
 ```
 
@@ -121,6 +124,18 @@ You can always check remaining seconds amount by fetching [user information](htt
 convertapi.getUser().then(function(info) {
   console.log("Seconds left: " + info.SecondsLeft);
 });
+```
+
+### Error handling
+
+```javascript
+convertapi
+  .convert('pdf', { File: 'https://website/my_file.docx' })
+  .catch(function(e) {
+    console.error(e.toString());
+    console.debug(e.request);
+    console.debug(e.response);
+  });
 ```
 
 ### More examples

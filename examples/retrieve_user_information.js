@@ -11,5 +11,5 @@ convertapi.getUser()
     console.log("Name: " + info.FullName);
   })
   .catch(function(e) {
-    console.log(e.toString());
+    console.error(e.toString());
   });

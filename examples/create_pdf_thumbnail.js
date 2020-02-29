@@ -28,5 +28,5 @@ convertapi.convert('jpg', {
     console.log("The thumbnail saved to\n" + files);
   })
   .catch(function(e) {
-    console.log(e.toString());
+    console.error(e.toString());
   });

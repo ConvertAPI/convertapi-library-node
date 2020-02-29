@@ -27,5 +27,5 @@ convertapi
     console.log("The PDF saved to " + files);
   })
   .catch(function(e) {
-    console.log(e.toString());
+    console.error(e.toString());
   });
