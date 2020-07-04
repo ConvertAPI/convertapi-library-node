@@ -4,7 +4,7 @@
 var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
 
 // Example of saving Word docx to PDF using OpenOffice converter
-// https://www.convertapi.com/doc-to-pdf/openofficetopdf
+// https://www.convertapi.com/doc-to-pdf/openoffice
 
 var dir = require('os').tmpdir();
 var upload = convertapi.upload('./examples/files/test.docx');
