@@ -17,7 +17,8 @@ const Task = class {
   async run() {
     const params = await this.normalizeParams(this.params);
     const fromFormat = this.fromFormat || detectFormat(params);
-    const path = `convert/${fromFormat}/to/${this.toFormat}`;
+    const converter = params.converter ? `/converter/${params.converter}` : '';
+    const path = `convert/${fromFormat}/to/${this.toFormat}${converter}`;
     const timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
     const response = await this.api.client.post(path, params, timeout);
 
