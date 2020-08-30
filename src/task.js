@@ -8,18 +8,22 @@ const Task = class {
     this.toFormat = toFormat;
     this.conversionTimeout = conversionTimeout || api.conversionTimeout;
     this.params = params;
-    this.defaultParams = {
-      StoreFile: true,
-      Timeout: this.conversionTimeout,
-    };
+    this.defaultParams = { StoreFile: true };
   }
 
   async run() {
+    let timeout;
+
     const params = await this.normalizeParams(this.params);
+
+    if (this.conversionTimeout) {
+      params.Timeout = this.conversionTimeout;
+      timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
+    }
+
     const fromFormat = this.fromFormat || detectFormat(params);
     const converter = params.converter ? `/converter/${params.converter}` : '';
     const path = `convert/${fromFormat}/to/${this.toFormat}${converter}`;
-    const timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
     const response = await this.api.client.post(path, params, timeout);
 
     return new Result(this.api, response);

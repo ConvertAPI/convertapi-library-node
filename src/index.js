@@ -8,10 +8,10 @@ class ConvertAPI {
   constructor(secret, options = {}) {
     this.secret = secret;
     this.baseUri = options.baseUri || 'https://v2.convertapi.com';
-    this.conversionTimeout = options.conversionTimeout || 180;
+    this.conversionTimeout = options.conversionTimeout;
     this.conversionTimeoutDelta = options.conversionTimeoutDelta || 10;
-    this.uploadTimeout = options.uploadTimeout || 600;
-    this.downloadTimeout = options.downloadTimeout || 600;
+    this.uploadTimeout = options.uploadTimeout || 1800;
+    this.downloadTimeout = options.downloadTimeout || 1800;
     this.userAgent = `ConvertAPI-Node/${pkg.version}`;
     this.proxy = options.proxy;
 

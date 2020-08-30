@@ -112,7 +112,7 @@ describe('ConvertAPI', () => {
   it('should handle api errors', () => {
     const params = { Url: 'https://www.w3.org/TR/PNG/iso_8859-1.txt' };
 
-    const promise = api.convert('pdf', params, 'web', 600);
+    const promise = api.convert('pdf', params, 'web', -10);
 
     expect(promise).to.be.rejectedWith(/Parameter validation error/);
   });
