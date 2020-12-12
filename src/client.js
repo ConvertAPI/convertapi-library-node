@@ -1,6 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
-import { buildQueryString } from './utils';
+import { buildQueryString, encodeFileName } from './utils';
 import UploadResult from './upload_result';
 import Error from './error';
 
@@ -69,7 +69,7 @@ export default class Client {
   }
 
   upload(stream, fileName) {
-    const encodedFileName = encodeURIComponent(fileName);
+    const encodedFileName = encodeFileName(fileName);
 
     const headers = Object.assign({
       'Content-Type': 'application/octet-stream',

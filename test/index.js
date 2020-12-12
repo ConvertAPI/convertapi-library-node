@@ -29,6 +29,13 @@ describe('ConvertAPI', () => {
     return expect(result).to.eventually.have.property('fileId');
   });
 
+  it ('should upload file with special characters in the name', () => {
+    const file = './examples/files/test.pdf';
+    const result = api.upload(file, 'test(ok).pdf');
+
+    return expect(result).to.eventually.have.property('fileId');
+  });
+
   it ('should convert file to pdf', async () => {
     const params = { File: './examples/files/test.docx' };
     const result = await api.convert('pdf', params);

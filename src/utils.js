@@ -91,3 +91,8 @@ export const getReadableStream = (source) => {
 
   return fs.createReadStream(source);
 };
+
+export const encodeFileName = (fileName) => {
+  const str = encodeURIComponent(fileName);
+  return str.replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16)}`);
+};
