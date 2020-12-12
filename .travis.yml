@@ -1,12 +1,16 @@
 language: node_js
 node_js:
-- 13
-- 12
-- 11
-- 10
-- 9
-- 8
-- 6
+  - node
+  - lts/*
+  - 15
+  - 14
+  - 13
+  - 12
+  - 11
+  - 10
+  - 9
+  - 8
+  - 6
 script:
 - npm run test
 - npm run build
