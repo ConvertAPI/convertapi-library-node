@@ -6,7 +6,7 @@
 
 ## Convert your files with our online file conversion API
 
-[The ConvertAPI](https://convertapi.com) helps converting various file formats. Creating PDF and Images from various sources like Word, Excel, Powerpoint, images, web pages or raw HTML codes. Merge, Encrypt, Split, Repair and Decrypt PDF files. And many others files manipulations. In just few minutes you can integrate it into your application and use it easily.
+[The ConvertAPI](https://convertapi.com) helps in converting various file formats. Creating PDF and Images from various sources like Word, Excel, Powerpoint, images, web pages or raw HTML codes. Merge, Encrypt, Split, Repair and Decrypt PDF files and many other file manipulations. You can integrate it into your application in just a few minutes and use it easily.
 
 ## Requirements
 
@@ -36,7 +36,7 @@ import convertapiPackage from 'convertapi';
 const convertapi = convertapiPackage('your-api-secret');
 ```
 
-You can specify aditional options, like proxy configuration and timeouts, when initializing the client:
+You can specify additional options, like proxy configuration and timeouts, when initializing the client:
 
 ```javascript
 var convertapi = require('convertapi')('your-api-secret', {
@@ -56,7 +56,7 @@ var convertapi = require('convertapi')('your-api-secret', {
 
 ### File conversion
 
-Example to convert file to PDF. All supported formats and options can be found
+Convert file to PDF example. All supported file formats and options can be found
 [here](https://www.convertapi.com).
 
 ```javascript
@@ -102,7 +102,7 @@ var resultPromise = convertapi.convert('pdf', { File: 'https://website/my_file' 
 
 #### Additional conversion parameters
 
-ConvertAPI accepts extra conversion parameters depending on converted formats. All conversion
+ConvertAPI accepts additional conversion parameters depending on selected formats. All conversion
 parameters and explanations can be found [here](https://www.convertapi.com).
 
 ```javascript
@@ -118,7 +118,7 @@ var resultPromise = convertapi.convert(
 
 ### User information
 
-You can always check remaining seconds amount by fetching [user information](https://www.convertapi.com/doc/user).
+You can always check your remaining seconds amount programmatically by fetching [user information](https://www.convertapi.com/doc/user).
 
 ```javascript
 convertapi.getUser().then(function(info) {
@@ -140,11 +140,11 @@ convertapi
 
 ### More examples
 
-You can find more advanced examples in the [examples/](https://github.com/ConvertAPI/convertapi-node/tree/master/examples) folder.
+Find more advanced examples in the [examples/](https://github.com/ConvertAPI/convertapi-node/tree/master/examples) folder.
 
 ## Development Commands
 
-- `npm run clean` - Remove `lib/` directory
+- `npm run clean` - Remove the `lib/` directory
 - `npm test` - Run tests with linting and coverage results.
 - `npm run test:only` - Run tests without linting or coverage.
 - `npm run test:watch` - You can even re-run tests on file changes!
