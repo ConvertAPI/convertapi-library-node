@@ -1,15 +1,10 @@
-export interface ProxyOptions {
-  host: string;
-  port: number;
-}
-
 export interface Options {
-  baseUri?: string;
   conversionTimeout?: number;
   conversionTimeoutDelta?: number;
   uploadTimeout?: number;
   downloadTimeout?: number;
-  proxy?: ProxyOptions;
+  proxy?: object;
+  baseUri?: string;
 }
 
 export interface ResultFile {
