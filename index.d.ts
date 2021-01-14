@@ -15,7 +15,9 @@ export interface ResultFile {
 }
 
 export interface Result {
+  readonly response: object;
   readonly conversionCost: number;
+  readonly jobId?: string;
   readonly file: ResultFile;
   readonly files: [ResultFile];
   saveFiles(path: string): Promise<[string]>;
