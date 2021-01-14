@@ -10,12 +10,17 @@ export default class Result {
     return this.response.ConversionCost;
   }
 
+  get jobId() {
+    return this.response.JobId;
+  }
+
   get file() {
     return this.files[0];
   }
 
   get files() {
-    return this.response.Files.map(file => new ResultFile(this.api, file));
+    const list = this.response.Files || [];
+    return list.map(file => new ResultFile(this.api, file));
   }
 
   async saveFiles(path) {
