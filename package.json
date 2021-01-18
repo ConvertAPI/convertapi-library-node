@@ -3,7 +3,7 @@
   "version": "1.9.0",
   "description": "Official convertapi.com API client",
   "main": "./lib/index.js",
-  "types": "./index.d.js",
+  "types": "./index.d.ts",
   "scripts": {
     "clean": "rimraf lib",
     "test": "npm run lint && npm run cover",
