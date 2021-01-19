@@ -1,6 +1,6 @@
 {
   "name": "convertapi",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Official convertapi.com API client",
   "main": "./lib/index.js",
   "types": "./index.d.ts",
