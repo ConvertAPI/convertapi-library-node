@@ -1,13 +1,19 @@
 import fs from 'fs';
 import chai from 'chai';
 
-import ConvertAPI from '../src';
+import ConvertAPIInit, { ConvertAPI } from '../src';
 
 chai.use(require('chai-as-promised'));
 chai.use(require('chai-fs'));
 
 const expect = chai.expect;
-const api = ConvertAPI(process.env.CONVERT_API_SECRET);
+const api = new ConvertAPI(process.env.CONVERT_API_SECRET);
+
+describe('ConvertAPIInit', () => {
+  it('should assign secret', () => {
+    expect(ConvertAPIInit('test').secret).to.equal('test');
+  });
+});
 
 describe('ConvertAPI', () => {
   it('should assign secret', () => {
@@ -125,7 +131,7 @@ describe('ConvertAPI', () => {
   });
 
   it('should handle client errors', () => {
-    const fastApi = ConvertAPI(process.env.CONVERT_API_SECRET, { uploadTimeout: 0.0001 });
+    const fastApi = new ConvertAPI(process.env.CONVERT_API_SECRET, { uploadTimeout: 0.0001 });
 
     const params = { File: './examples/files/test.docx' };
 

@@ -4,7 +4,7 @@ import Task from './task';
 import Client from './client';
 import { getReadableStream } from './utils';
 
-class ConvertAPI {
+export class ConvertAPI {
   constructor(secret, options = {}) {
     this.secret = secret;
     this.baseUri = options.baseUri || 'https://v2.convertapi.com';
