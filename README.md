@@ -31,9 +31,9 @@ var convertapi = require('convertapi')('your-api-secret');
 Or using ES modules:
 
 ```javascript
-import convertapiPackage from 'convertapi';
+import { ConvertAPI } from 'convertapi';
 
-const convertapi = convertapiPackage('your-api-secret');
+const convertapi = new ConvertAPI('your-api-secret');
 ```
 
 You can specify additional options, like proxy configuration and timeouts, when initializing the client:
@@ -52,6 +52,12 @@ var convertapi = require('convertapi')('your-api-secret', {
     }
   }
 });
+```
+
+If using ES module:
+
+```javascript
+const convertapi = new ConvertAPI('your-api-secret', { conversionTimeout: 60 });
 ```
 
 ### File conversion
