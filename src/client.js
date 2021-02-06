@@ -82,6 +82,7 @@ export default class Client {
       headers,
       data: stream,
       maxContentLength: Infinity,
+      maxBodyLength: Infinity,
       timeout: this.api.uploadTimeout * 1000,
       proxy: this.api.proxy,
     };
