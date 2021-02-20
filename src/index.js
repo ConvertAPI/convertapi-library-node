@@ -4,37 +4,45 @@ import Task from './task';
 import Client from './client';
 import { getReadableStream } from './utils';
 
-export class ConvertAPI {
-  constructor(secret, options = {}) {
-    this.secret = secret;
-    this.baseUri = options.baseUri || 'https://v2.convertapi.com';
-    this.conversionTimeout = options.conversionTimeout;
-    this.conversionTimeoutDelta = options.conversionTimeoutDelta || 10;
-    this.uploadTimeout = options.uploadTimeout || 1800;
-    this.downloadTimeout = options.downloadTimeout || 1800;
-    this.userAgent = `ConvertAPI-Node/${pkg.version}`;
-    this.proxy = options.proxy;
-
-    this.client = new Client(this);
+function ConvertAPI(secret, options = {}) {
+  if (!(this instanceof ConvertAPI)) {
+    return new ConvertAPI(secret, options);
   }
 
-  async convert(toFormat, params, fromFormat = null, conversionTimeout = null) {
-    const task = new Task(this, fromFormat, toFormat, params, conversionTimeout);
-    return task.run();
-  }
+  this.secret = secret;
+  this.baseUri = options.baseUri || 'https://v2.convertapi.com';
+  this.conversionTimeout = options.conversionTimeout;
+  this.conversionTimeoutDelta = options.conversionTimeoutDelta || 10;
+  this.uploadTimeout = options.uploadTimeout || 1800;
+  this.downloadTimeout = options.downloadTimeout || 1800;
+  this.userAgent = `ConvertAPI-Node/${pkg.version}`;
+  this.proxy = options.proxy;
 
-  async getUser() {
-    return this.client.get('user');
-  }
-
-  async upload(source, fileName = null) {
-    const resolvedFileName = fileName || path.basename(source);
-    const stream = getReadableStream(source);
-
-    return this.client.upload(stream, resolvedFileName);
-  }
+  this.client = new Client(this);
 }
 
-const init = (secret, options = {}) => new ConvertAPI(secret, options);
+async function convert(toFormat, params, fromFormat = null, conversionTimeout = null) {
+  const task = new Task(this, fromFormat, toFormat, params, conversionTimeout);
+  return task.run();
+}
 
-export default init;
+async function getUser() {
+  return this.client.get('user');
+}
+
+async function upload(source, fileName = null) {
+  const resolvedFileName = fileName || path.basename(source);
+  const stream = getReadableStream(source);
+
+  return this.client.upload(stream, resolvedFileName);
+}
+
+ConvertAPI.prototype = { convert, getUser, upload };
+
+module.exports = ConvertAPI;
+
+// expose constructor as a named property to enable mocking with Sinon.JS
+module.exports.ConvertAPI = ConvertAPI;
+
+// Allow use with the TypeScript compiler without `esModuleInterop`.
+module.exports.default = ConvertAPI;

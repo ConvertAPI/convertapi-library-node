@@ -45,4 +45,4 @@ export class ConvertAPI {
   upload(source: string | NodeJS.ReadableStream, fileName?: string): Promise<UploadResult>;
 }
 
-export default function init(secret: string, options?: Options): ConvertAPI;
+export default ConvertAPI;

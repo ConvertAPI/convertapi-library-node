@@ -31,7 +31,7 @@ var convertapi = require('convertapi')('your-api-secret');
 Or using ES modules:
 
 ```javascript
-import { ConvertAPI } from 'convertapi';
+import ConvertAPI from 'convertapi';
 
 const convertapi = new ConvertAPI('your-api-secret');
 ```

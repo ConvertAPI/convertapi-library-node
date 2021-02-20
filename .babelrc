@@ -3,18 +3,11 @@
     "development": {
       "presets": [
         ["env", { "targets": { "node": 6 } }]
-      ],
-      "plugins": [
-        "add-module-exports"
       ]
     },
     "production": {
       "presets": [
-        ["env", { "targets": { "node": 6 } }],
-        "minify"
-      ],
-      "plugins": [
-        "add-module-exports"
+        ["env", { "targets": { "node": 6 } }]
       ]
     }
   }

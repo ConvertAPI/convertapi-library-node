@@ -1,7 +1,6 @@
 import fs from 'fs';
 import chai from 'chai';
-
-import ConvertAPIInit, { ConvertAPI } from '../src';
+import ConvertAPI from '../src';
 
 chai.use(require('chai-as-promised'));
 chai.use(require('chai-fs'));
@@ -9,13 +8,11 @@ chai.use(require('chai-fs'));
 const expect = chai.expect;
 const api = new ConvertAPI(process.env.CONVERT_API_SECRET);
 
-describe('ConvertAPIInit', () => {
-  it('should assign secret', () => {
-    expect(ConvertAPIInit('test').secret).to.equal('test');
-  });
-});
-
 describe('ConvertAPI', () => {
+  it('should be accessible as function', () => {
+    expect(ConvertAPI('test').secret).to.equal('test');
+  });
+
   it('should assign secret', () => {
     const expectedVal = process.env.CONVERT_API_SECRET;
     expect(api.secret).to.equal(expectedVal);
