@@ -21,7 +21,7 @@ const Task = class {
       timeout = this.conversionTimeout + this.api.conversionTimeoutDelta;
     }
 
-    const fromFormat = this.fromFormat || detectFormat(params);
+    const fromFormat = this.fromFormat || detectFormat(params, this.toFormat);
     const converter = params.converter ? `/converter/${params.converter}` : '';
     const path = `convert/${fromFormat}/to/${this.toFormat}${converter}`;
     const response = await this.api.client.post(path, params, timeout);

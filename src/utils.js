@@ -9,6 +9,7 @@ import UploadResult from './upload_result';
 
 const URI_REGEXP = /^https?:/i;
 const DEFAULT_URL_FORMAT = 'url';
+const ANY_FORMAT = 'any';
 
 export const normalizeFilesParam = async (promise) => {
   const value = await promise;
@@ -40,8 +41,12 @@ export const buildFileParam = async (api, value) => {
   return api.upload(value);
 };
 
-export const detectFormat = (params) => {
+export const detectFormat = (params, toFormat) => {
   let resource;
+
+  if (toFormat.toString().toLowerCase() === 'zip') {
+    return ANY_FORMAT;
+  }
 
   if (params.Url) {
     return DEFAULT_URL_FORMAT;
