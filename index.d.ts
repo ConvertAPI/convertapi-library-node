@@ -40,7 +40,8 @@ export interface Client {
 export class ConvertAPI {
   client: Client;
   constructor (secret: string, options?: Options);
-  convert(toFormat: string, params: object): Promise<Result>
+  convert(toFormat: string, params: object): Promise<Result>;
+  convert(toFormat: string, params: object, fromFormat: string): Promise<Result>;
   getUser(): Promise<object>;
   upload(source: string | NodeJS.ReadableStream, fileName?: string): Promise<UploadResult>;
 }
