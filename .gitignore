@@ -35,7 +35,7 @@ jspm_packages
 .idea
 
 # Lib
-lib
+# lib
 
 # npm package lock
 package-lock.json
