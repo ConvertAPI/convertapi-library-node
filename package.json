@@ -1,7 +1,7 @@
 {
-  "name": "convertapi",
-  "version": "1.11.1",
-  "description": "Official convertapi.com API client",
+  "name": "convertapi-fork",
+  "version": "1.11.2",
+  "description": "Fork from official convertapi package for convertapi.com API client",
   "main": "./lib/index.js",
   "types": "./index.d.ts",
   "scripts": {
@@ -14,7 +14,7 @@
     "cover": "istanbul cover _mocha -- --require babel-core/register --require babel-polyfill --recursive --timeout 15000",
     "lint": "eslint src test",
     "build": "cross-env BABEL_ENV=production babel src --out-dir lib",
-    "prepare": "npm run build"
+    "prepublish": "npm run clean && npm run lint && npm run build"
   },
   "files": [
     "lib",
@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ConvertAPI/convertapi-node.git"
+    "url": "git+https://github.com/depodirect/convertapi-node.git"
   },
   "keywords": [
     "convert",
