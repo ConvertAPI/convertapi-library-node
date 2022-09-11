@@ -55,11 +55,17 @@ export default class Client {
     const response = await axios(options)
       .catch(error => Client.handleError(error));
 
-    response.data.pipe(fs.createWriteStream(path));
+    const writer = fs.createWriteStream(path);
+
+    response.data.pipe(writer);
 
     return new Promise((resolve, reject) => {
-      response.data.on('end', () => {
+      writer.on('finish', () => {
         resolve(path);
+      });
+
+      writer.on('error', (error) => {
+        reject(new Error(error));
       });
 
       response.data.on('error', (error) => {
