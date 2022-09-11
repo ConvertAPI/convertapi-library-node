@@ -1,0 +1,26 @@
+name: Build
+on: [push,pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 18
+          - 14
+          - 12
+          - 10
+    name: Node ${{ matrix.node-version }} sample
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm install
+      - env:
+          CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_SECRET }}
+        run: npm run test
+        run: npm run build
+        run: npm run test:examples
+
