@@ -1,7 +1,7 @@
 # ConvertAPI Node.js Client
 
 [![npm version](https://badge.fury.io/js/convertapi.svg)](https://badge.fury.io/js/convertapi)
-[![Build Status](https://travis-ci.org/ConvertAPI/convertapi-node.svg)](https://travis-ci.org/ConvertAPI/convertapi-node)
+[![Build Status](https://github.com/ConvertAPI/convertapi-node/actions/workflows/main.yml/badge.svg)](https://github.com/ConvertAPI/convertapi-node/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Convert your files with our online file conversion API
