@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
       - run: npm install --ignore-scripts
       - env:
           CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_SECRET }}

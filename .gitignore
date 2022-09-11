@@ -37,7 +37,8 @@ jspm_packages
 # Lib
 lib
 
-# package lock
+# npm package lock
+package-lock.json
 yarn.lock
 
 others
