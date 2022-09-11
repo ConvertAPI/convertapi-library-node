@@ -22,4 +22,6 @@ jobs:
           CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_SECRET }}
         run: npm test
       - run: npm run build
-      - run: npm run test:examples
+      - env:
+          CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_SECRET }}
+        run: npm run test:examples
