@@ -63,7 +63,7 @@ const convertapi = new ConvertAPI('your-api-secret', { conversionTimeout: 60 });
 ### File conversion
 
 Convert file to PDF example. All supported file formats and options can be found
-[here](https://www.convertapi.com).
+[here](https://www.convertapi.com/conversions).
 
 ```javascript
 convertapi.convert('pdf', { File: '/path/to/my_file.docx' })
