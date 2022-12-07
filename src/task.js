@@ -23,7 +23,8 @@ const Task = class {
 
     const fromFormat = this.fromFormat || detectFormat(params, this.toFormat);
     const converter = params.converter ? `/converter/${params.converter}` : '';
-    const path = `convert/${fromFormat}/to/${this.toFormat}${converter}`;
+    const asyncPath = params.Async ? 'async/' : '';
+    const path = `${asyncPath}convert/${fromFormat}/to/${this.toFormat}${converter}`;
     const response = await this.api.client.post(path, params, timeout);
 
     return new Result(this.api, response);
