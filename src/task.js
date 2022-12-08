@@ -24,7 +24,9 @@ const Task = class {
     const fromFormat = this.fromFormat || detectFormat(params, this.toFormat);
     const converter = params.converter ? `/converter/${params.converter}` : '';
     const asyncPath = params.Async ? 'async/' : '';
-    const path = `${asyncPath}convert/${fromFormat}/to/${this.toFormat}${converter}?WebHook=${params.WebHook}`;
+    const path = `${asyncPath}convert/${fromFormat}/to/${
+      this.toFormat
+    }${converter}?WebHook=${encodeURIComponent(params.WebHook)}`;
     const response = await this.api.client.post(path, params, timeout);
 
     return new Result(this.api, response);
