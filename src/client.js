@@ -37,6 +37,8 @@ export default class Client {
       data: buildQueryString(params),
       timeout: timeout * 1000,
       proxy: this.api.proxy,
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
     };
 
     return axios(options)
