@@ -35,6 +35,8 @@ export default class Client {
       url: this.url(path),
       headers: this.defaultHeader,
       data: buildQueryString(params),
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
       timeout: timeout * 1000,
       proxy: this.api.proxy,
     };
