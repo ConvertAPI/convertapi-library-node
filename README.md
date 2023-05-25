@@ -109,7 +109,7 @@ var resultPromise = convertapi.convert('pdf', { File: 'https://website/my_file' 
 #### Additional conversion parameters
 
 ConvertAPI accepts additional conversion parameters depending on selected formats. All conversion
-parameters and explanations can be found [here](https://www.convertapi.com).
+parameters and explanations can be found [here](https://www.convertapi.com/conversions).
 
 ```javascript
 var resultPromise = convertapi.convert(
