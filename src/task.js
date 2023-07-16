@@ -31,11 +31,12 @@ const Task = class {
 
   async normalizeParams(params) {
     const result = Object.assign({}, params, this.defaultParams);
+    const fileParams = Object.keys(params).filter(key => key.endsWith('File') && key !== 'StoreFile');
 
-    if (params.File) {
-      const file = await params.File;
-      result.File = await buildFileParam(this.api, file);
-    }
+    await Promise.all(fileParams.map(async (key) => {
+      const file = await params[key];
+      result[key] = await buildFileParam(this.api, file);
+    }));
 
     if (params.Files) {
       const files = await normalizeFilesParam(params.Files);
