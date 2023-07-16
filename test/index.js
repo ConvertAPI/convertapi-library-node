@@ -119,6 +119,17 @@ describe('ConvertAPI', () => {
     expect(result.file.url).to.be.a('string');
   });
 
+  it('should compare files', async () => {
+    const params = {
+      File: './examples/files/test.docx',
+      CompareFile: './examples/files/test.docx',
+    };
+
+    const result = await api.convert('compare', params);
+
+    expect(result.file.url).to.be.a('string');
+  });
+
   it('should handle api errors', () => {
     const params = { Url: 'https://www.w3.org/TR/PNG/iso_8859-1.txt' };
 
