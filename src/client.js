@@ -1,5 +1,5 @@
-import axios from 'axios';
 import fs from 'fs';
+import axios from 'axios';
 import { buildQueryString, encodeFileName } from './utils';
 import UploadResult from './upload_result';
 import Error from './error';
