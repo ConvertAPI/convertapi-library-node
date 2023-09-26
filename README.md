@@ -50,7 +50,8 @@ var convertapi = require('convertapi')('your-api-secret', {
       username: 'testuser',
       password: 'secret'
     }
-  }
+  },
+  keepAlive: true
 });
 ```
 

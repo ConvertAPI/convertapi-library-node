@@ -1,5 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
+import https from 'https';
 import { buildQueryString, encodeFileName } from './utils';
 import UploadResult from './upload_result';
 import Error from './error';
@@ -91,6 +92,7 @@ export default class Client {
       maxBodyLength: Infinity,
       timeout: this.api.uploadTimeout * 1000,
       proxy: this.api.proxy,
+      httpsAgent: new https.Agent({ keepAlive: this.api.keepAlive }),
     };
 
     return axios(options)
