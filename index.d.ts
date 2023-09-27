@@ -5,6 +5,7 @@ export interface Options {
   downloadTimeout?: number;
   proxy?: object;
   baseUri?: string;
+  keepAlive?: boolean;
 }
 
 export interface ResultFile {

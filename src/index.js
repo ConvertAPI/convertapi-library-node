@@ -17,6 +17,7 @@ function ConvertAPI(secret, options = {}) {
   this.downloadTimeout = options.downloadTimeout || 1800;
   this.userAgent = `ConvertAPI-Node/${pkg.version}`;
   this.proxy = options.proxy;
+  this.keepAlive = options.keepAlive !== undefined ? options.keepAlive : true;
 
   this.client = new Client(this);
 }
