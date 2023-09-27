@@ -21,6 +21,14 @@ export const normalizeFilesParam = async (promise) => {
   return Promise.all(value);
 };
 
+export const normalizeBaseUri = (baseUri) => {
+  if (baseUri[baseUri.length - 1] !== '/') {
+    return `${baseUri}/`;
+  }
+
+  return baseUri;
+};
+
 export const buildFileParam = async (api, value) => {
   if (URI_REGEXP.test(value)) {
     return value;
