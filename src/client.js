@@ -101,7 +101,7 @@ export default class Client {
   }
 
   url(path) {
-    return `${this.api.baseUri}/${path}?secret=${this.api.secret}`;
+    return `${this.api.baseUri}${path}?secret=${this.api.secret}`;
   }
 
   static handleError(error) {
