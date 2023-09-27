@@ -151,6 +151,6 @@ describe('ConvertAPI', () => {
   it('fetches user info', () => {
     const result = api.getUser();
 
-    return expect(result).to.eventually.have.property('SecondsLeft');
+    return expect(result).to.eventually.have.property('ConversionsConsumed');
   });
 });

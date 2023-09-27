@@ -124,11 +124,12 @@ var resultPromise = convertapi.convert(
 
 ### User information
 
-You can always check your remaining seconds amount programmatically by fetching [user information](https://www.convertapi.com/doc/user).
+You can always check your conversion counts by fetching [user information](https://www.convertapi.com/doc/user).
 
 ```javascript
 convertapi.getUser().then(function(info) {
-  console.log("Seconds left: " + info.SecondsLeft);
+  console.log("ConversionsTotal: " + info.ConversionsTotal);
+  console.log("ConversionsConsumed: " + info.ConversionsConsumed);
 });
 ```
 
