@@ -8,10 +8,6 @@
 
 [The ConvertAPI](https://convertapi.com) helps in converting various file formats. Creating PDF and Images from various sources like Word, Excel, Powerpoint, images, web pages or raw HTML codes. Merge, Encrypt, Split, Repair and Decrypt PDF files and many other file manipulations. You can integrate it into your application in just a few minutes and use it easily.
 
-## Requirements
-
-Node.js v6.0 and later.
-
 ## Installation
 
 ```sh
