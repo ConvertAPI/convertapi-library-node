@@ -13,17 +13,16 @@ export default class Client {
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json',
     };
+    this.httpsAgent = new https.Agent({ keepAlive: api.keepAlive });
   }
 
   get(path, params = {}, timeout = null) {
-    const options = {
+    const options = this.buildOptions({
       method: 'get',
       url: this.url(path),
-      headers: this.defaultHeader,
       params,
       timeout: timeout * 1000,
-      proxy: this.api.proxy,
-    };
+    });
 
     return axios(options)
       .then(response => response.data)
@@ -31,16 +30,12 @@ export default class Client {
   }
 
   post(path, params, timeout = null) {
-    const options = {
+    const options = this.buildOptions({
       method: 'post',
       url: this.url(path),
-      headers: this.defaultHeader,
       data: buildQueryString(params),
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
       timeout: timeout * 1000,
-      proxy: this.api.proxy,
-    };
+    });
 
     return axios(options)
       .then(response => response.data)
@@ -48,12 +43,11 @@ export default class Client {
   }
 
   async download(url, path) {
-    const options = {
+    const options = this.buildOptions({
       url,
       timeout: this.api.downloadTimeout * 1000,
-      proxy: this.api.proxy,
       responseType: 'stream',
-    };
+    });
 
     const response = await axios(options)
       .catch(error => Client.handleError(error));
@@ -85,17 +79,13 @@ export default class Client {
       'Content-Disposition': `attachment; filename*=UTF-8''${encodedFileName}`
     }, this.defaultHeader);
 
-    const options = {
+    const options = this.buildOptions({
       method: 'post',
       url: this.url('upload'),
       headers,
       data: stream,
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
       timeout: this.api.uploadTimeout * 1000,
-      proxy: this.api.proxy,
-      httpsAgent: new https.Agent({ keepAlive: this.api.keepAlive }),
-    };
+    });
 
     return axios(options)
       .then(response => new UploadResult(response.data))
@@ -104,6 +94,16 @@ export default class Client {
 
   url(path) {
     return `${this.api.baseUri}${path}?secret=${this.api.secret}`;
+  }
+
+  buildOptions(options) {
+    return Object.assign({
+      headers: this.defaultHeader,
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+      proxy: this.api.proxy,
+      httpsAgent: this.httpsAgent,
+    }, options);
   }
 
   static handleError(error) {
