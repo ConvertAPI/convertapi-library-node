@@ -2,7 +2,6 @@ import {
   normalizeFilesParam,
   buildFileParam,
   detectFormat,
-  detectConverter,
 } from './utils';
 import Result from './result';
 
@@ -27,9 +26,7 @@ const Task = class {
     }
 
     const fromFormat = this.fromFormat || detectFormat(params, this.toFormat);
-    const converter = detectConverter(params);
-    const converterPath = converter ? `/converter/${converter}` : '';
-    const path = `convert/${fromFormat}/to/${this.toFormat}${converterPath}`;
+    const path = `convert/${fromFormat}/to/${this.toFormat}`;
     const response = await this.api.client.post(path, params, timeout);
 
     return new Result(this.api, response);

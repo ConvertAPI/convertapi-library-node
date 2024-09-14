@@ -109,11 +109,3 @@ export const encodeFileName = (fileName) => {
   const str = encodeURIComponent(fileName);
   return str.replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16)}`);
 };
-
-export const detectConverter = (params) => {
-  const converterKey = Object.keys(params).find(key => key.toLowerCase() === 'converter');
-
-  if (!converterKey) return undefined;
-
-  return params[converterKey];
-};
