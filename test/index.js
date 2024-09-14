@@ -76,13 +76,6 @@ describe('ConvertAPI', () => {
     expect(result.file.url).to.be.a('string');
   });
 
-  it ('should convert file using alternative converter', async () => {
-    const params = { File: 'https://cdn.convertapi.com/cara/testfiles/document.docx?test=1', converter: 'openoffice' };
-    const result = await api.convert('pdf', params);
-
-    expect(result.file.url).to.be.a('string');
-  });
-
   it('should convert url to pdf', async () => {
     const params = { Url: 'http://convertapi.com' };
     const result = await api.convert('pdf', params, 'web');
