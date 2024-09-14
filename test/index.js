@@ -10,12 +10,12 @@ const api = new ConvertAPI(process.env.CONVERT_API_SECRET);
 
 describe('ConvertAPI', () => {
   it('should be accessible as function', () => {
-    expect(ConvertAPI('test').secret).to.equal('test');
+    expect(ConvertAPI('test').credentials).to.equal('test');
   });
 
-  it('should assign secret', () => {
+  it('should assign credentials', () => {
     const expectedVal = process.env.CONVERT_API_SECRET;
-    expect(api.secret).to.equal(expectedVal);
+    expect(api.credentials).to.equal(expectedVal);
   });
 
   it ('should upload file', () => {
