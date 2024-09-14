@@ -4,12 +4,12 @@ import Task from './task';
 import Client from './client';
 import { getReadableStream, normalizeBaseUri } from './utils';
 
-function ConvertAPI(secret, options = {}) {
+function ConvertAPI(credentials, options = {}) {
   if (!(this instanceof ConvertAPI)) {
-    return new ConvertAPI(secret, options);
+    return new ConvertAPI(credentials, options);
   }
 
-  this.secret = secret;
+  this.credentials = credentials;
   this.baseUri = normalizeBaseUri(options.baseUri || 'https://v2.convertapi.com/');
   this.conversionTimeout = options.conversionTimeout;
   this.conversionTimeoutDelta = options.conversionTimeoutDelta || 10;

@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 
-// set your api secret
+// set your api secret or token
 var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
 
 // Example of using readable stream to convert to pdf

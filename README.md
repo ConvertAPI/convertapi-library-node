@@ -16,12 +16,12 @@ npm install convertapi --save
 
 ## Usage
 
-The package needs to be configured with your account's secret key which is available at https://www.convertapi.com/a
+The package needs to be configured with your account's secret key or token which is available at https://www.convertapi.com/a
 
 Require it with the key's value:
 
 ```javascript
-var convertapi = require('convertapi')('your-api-secret');
+var convertapi = require('convertapi')('your-api-secret-or-token');
 ```
 
 Or using ES modules:
@@ -29,13 +29,13 @@ Or using ES modules:
 ```javascript
 import ConvertAPI from 'convertapi';
 
-const convertapi = new ConvertAPI('your-api-secret');
+const convertapi = new ConvertAPI('your-api-secret-or-token');
 ```
 
 You can specify additional options, like proxy configuration and timeouts, when initializing the client:
 
 ```javascript
-var convertapi = require('convertapi')('your-api-secret', {
+var convertapi = require('convertapi')('your-api-secret-or-token', {
   conversionTimeout: 60,
   uploadTimeout: 60,
   downloadTimeout: 60,
@@ -54,7 +54,7 @@ var convertapi = require('convertapi')('your-api-secret', {
 If using ES module:
 
 ```javascript
-const convertapi = new ConvertAPI('your-api-secret', { conversionTimeout: 60 });
+const convertapi = new ConvertAPI('your-api-secret-or-token', { conversionTimeout: 60 });
 ```
 
 ### File conversion

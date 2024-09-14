@@ -11,6 +11,7 @@ export default class Client {
     this.defaultHeader = {
       'User-Agent': api.userAgent,
       'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${api.credentials}`,
       Accept: 'application/json',
     };
     this.httpsAgent = new https.Agent({ keepAlive: api.keepAlive });
@@ -93,7 +94,7 @@ export default class Client {
   }
 
   url(path) {
-    return `${this.api.baseUri}${path}?secret=${this.api.secret}`;
+    return `${this.api.baseUri}${path}`;
   }
 
   buildOptions(options) {

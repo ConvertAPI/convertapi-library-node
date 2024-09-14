@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-// set your api secret
+// set your api secret or token
 var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
 
 // Example of saving Word docx to PDF and to PNG
