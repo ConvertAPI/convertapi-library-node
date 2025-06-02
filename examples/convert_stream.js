@@ -2,8 +2,8 @@
 
 var fs = require('fs');
 
-// set your api secret or token
-var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
+// set your api token
+var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Example of using readable stream to convert to pdf
 // https://www.convertapi.com/docx-to-pdf

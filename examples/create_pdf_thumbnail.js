@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-// set your api secret or token
-var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
+// set your api token
+var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Example of extracting first page from PDF and then chaining conversion PDF page to JPG.
 // https://www.convertapi.com/pdf-to-extract

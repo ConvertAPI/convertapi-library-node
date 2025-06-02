@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-// set your api secret or token
-var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
+// set your api token
+var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Example of using buffer and stream to convert base64 encoded content to pdf
 // https://www.convertapi.com/png-to-pdf

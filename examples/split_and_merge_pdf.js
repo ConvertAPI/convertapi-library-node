@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-// set your api secret or token
-var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
+// set your api token
+var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Example of extracting first and last pages from PDF and then merging them back to new PDF.
 // https://www.convertapi.com/pdf-to-split

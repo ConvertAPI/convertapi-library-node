@@ -16,12 +16,12 @@ npm install convertapi --save
 
 ## Usage
 
-The package needs to be configured with your account's secret key or token which is available at https://www.convertapi.com/a
+The package needs to be configured with your account's token which is available at https://www.convertapi.com/a/authentication
 
 Require it with the key's value:
 
 ```javascript
-var convertapi = require('convertapi')('your-api-secret-or-token');
+var convertapi = require('convertapi')('api-token');
 ```
 
 Or using ES modules:
@@ -29,13 +29,13 @@ Or using ES modules:
 ```javascript
 import ConvertAPI from 'convertapi';
 
-const convertapi = new ConvertAPI('your-api-secret-or-token');
+const convertapi = new ConvertAPI('api-token');
 ```
 
 You can specify additional options, like proxy configuration and timeouts, when initializing the client:
 
 ```javascript
-var convertapi = require('convertapi')('your-api-secret-or-token', {
+var convertapi = require('convertapi')('api-token', {
   conversionTimeout: 60,
   uploadTimeout: 60,
   downloadTimeout: 60,
@@ -54,7 +54,7 @@ var convertapi = require('convertapi')('your-api-secret-or-token', {
 If using ES module:
 
 ```javascript
-const convertapi = new ConvertAPI('your-api-secret-or-token', { conversionTimeout: 60 });
+const convertapi = new ConvertAPI('api-token', { conversionTimeout: 60 });
 ```
 
 ### File conversion
@@ -147,7 +147,7 @@ convertapi
 Set `base_uri` parameter to use other service domains. Dedicated to the region [domain list](https://www.convertapi.com/doc/servers-location).
 
 ```js
-var convertapi = require('../lib')(process.env.CONVERT_API_SECRET, { baseUri: 'https://eu-v2.convertapi.com/' });
+var convertapi = require('../lib')(process.env.API_TOKEN, { baseUri: 'https://eu-v2.convertapi.com/' });
 ```
 
 ### More examples

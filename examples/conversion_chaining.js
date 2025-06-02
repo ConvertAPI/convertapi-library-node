@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-// set your api secret or token
-var convertapi = require('../lib')(process.env.CONVERT_API_SECRET);
+// set your api token
+var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Short example of conversions chaining, the PDF pages extracted and saved as separated JPGs and then ZIP'ed
 // https://www.convertapi.com/doc/chaining
