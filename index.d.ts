@@ -20,8 +20,8 @@ export interface Result {
   readonly conversionCost: number;
   readonly jobId?: string;
   readonly file: ResultFile;
-  readonly files: [ResultFile];
-  saveFiles(path: string): Promise<[string]>;
+  readonly files: ResultFile[];
+  saveFiles(path: string): Promise<string[]>;
 }
 
 export interface UploadResult {
