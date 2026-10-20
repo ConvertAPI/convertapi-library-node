@@ -144,10 +144,18 @@ jobs:
       - name: Lint and test
         env:
           CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
-        # The staging API now and then answers 503 (no healthy upstream), so each test gets two retries.
+        # The staging API answers 503 (no healthy upstream) in bursts of up to a minute, so each test gets
+        # two immediate retries and the whole suite up to three attempts, 30 s apart.
         run: |
+          set -euo pipefail
           npm run lint
-          npm run cover -- --retries 2
+          for attempt in 1 2 3; do
+            npm run cover -- --retries 2 && exit 0
+            echo "::warning::Attempt $attempt: the tests failed, see above"
+            sleep 30
+          done
+          echo "::error::The tests failed three times"
+          exit 1
 
       - name: Set the version and build
         env:
@@ -187,7 +195,7 @@ jobs:
             echo "::error::No npm credentials: set up Trusted Publishing (NPM_TRUSTED_PUBLISHING) or the NPM_TOKEN secret"
             exit 1
           fi
-          npm publish "out/$PACKAGE-$VERSION.tgz" --provenance --access public --tag "$DIST_TAG" --ignore-scripts
+          npm publish "./out/$PACKAGE-$VERSION.tgz" --provenance --access public --tag "$DIST_TAG" --ignore-scripts
 
       # The registry usually serves a new version within seconds. A slow registry is not a failed release,
       # so this only warns.

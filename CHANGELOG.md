@@ -3,7 +3,10 @@
 All notable changes to the `convertapi` npm package. Versions follow [Semantic Versioning](https://semver.org/);
 each one is a GitHub Release `v{version}` (see [RELEASING.md](RELEASING.md)).
 
-## 1.15.1 - 2026-10-20
+## 1.15.2 - 2026-10-20
+
+The first release from the new pipeline. v1.15.1 was tagged but never reached npm: its publish workflow
+passed the tarball as `out/...`, which npm reads as a GitHub repository.
 
 - Require axios 1.20.0 or later (was 1.6.2), which pulls in fixed follow-redirects and form-data. This
   closes the high and critical advisories in what `npm install convertapi` resolves, among them

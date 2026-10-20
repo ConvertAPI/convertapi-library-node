@@ -59,16 +59,23 @@ jobs:
             echo "::error::The CONVERTAPI_STAGING_TOKEN secret is not available to this run (a pull request from a fork gets no secrets)"
             exit 1
           fi
-          # The staging API now and then answers 503 (no healthy upstream), so each test gets two retries.
+          # The staging API answers 503 (no healthy upstream) in bursts of up to a minute, so each test gets
+          # two immediate retries and the whole suite up to three attempts, 30 s apart.
           npm run lint
-          npm run cover -- --retries 2
+          for attempt in 1 2 3; do
+            npm run cover -- --retries 2 && exit 0
+            echo "::warning::Attempt $attempt: the tests failed, see above"
+            sleep 30
+          done
+          echo "::error::The tests failed three times"
+          exit 1
 
       - name: Build
         run: npm run build
 
       # The examples call the production API and catch and print their own errors, so the preload points
-      # them at CONVERT_API_BASE_URI and any printed error fails an attempt. Up to three attempts, because
-      # the staging API now and then answers 503.
+      # them at CONVERT_API_BASE_URI and any printed error fails an attempt. Up to three attempts, 30 s apart,
+      # because the staging API answers 503 in bursts.
       - name: Run the examples
         env:
           API_TOKEN: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
@@ -80,7 +87,7 @@ jobs:
               exit 0
             fi
             echo "::warning::Attempt $attempt: an example failed, see the errors above"
-            sleep 10
+            sleep 30
           done
           echo "::error::The examples failed three times"
           exit 1
