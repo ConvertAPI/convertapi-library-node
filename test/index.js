@@ -6,7 +6,9 @@ chai.use(require('chai-as-promised'));
 chai.use(require('chai-fs'));
 
 const expect = chai.expect;
-const api = new ConvertAPI(process.env.CONVERT_API_SECRET);
+// CONVERT_API_BASE_URI points the tests at another API host (CI uses staging); unset means the default.
+const baseUri = process.env.CONVERT_API_BASE_URI;
+const api = new ConvertAPI(process.env.CONVERT_API_SECRET, { baseUri });
 
 describe('ConvertAPI', () => {
   it('should be accessible as function', () => {
@@ -132,7 +134,7 @@ describe('ConvertAPI', () => {
   });
 
   it('should handle client errors', () => {
-    const fastApi = new ConvertAPI(process.env.CONVERT_API_SECRET, { uploadTimeout: 0.0001 });
+    const fastApi = new ConvertAPI(process.env.CONVERT_API_SECRET, { baseUri, uploadTimeout: 0.0001 });
 
     const params = { File: './examples/files/test.docx' };
 
