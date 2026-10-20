@@ -144,7 +144,10 @@ jobs:
       - name: Lint and test
         env:
           CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
-        run: npm test
+        # The staging API now and then answers 503 (no healthy upstream), so each test gets two retries.
+        run: |
+          npm run lint
+          npm run cover -- --retries 2
 
       - name: Set the version and build
         env:
