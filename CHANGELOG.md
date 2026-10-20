@@ -8,7 +8,6 @@ each one is a GitHub Release `v{version}` (see [RELEASING.md](RELEASING.md)).
 The first release from the new pipeline. v1.15.1 was tagged but never reached npm: its publish workflow
 passed the tarball as `out/...`, which npm reads as a GitHub repository.
 
-
 - Require axios 1.20.0 or later (was 1.6.2), which pulls in fixed follow-redirects and form-data. This
   closes the high and critical advisories in what `npm install convertapi` resolves, among them
   GHSA-jqh4-m9w3-8hp9, GHSA-fjxv-7rqg-78g4 and GHSA-r4q5-vmmm-2653.
