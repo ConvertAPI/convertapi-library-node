@@ -3,21 +3,14 @@
 // set your api token
 var convertapi = require('../lib')(process.env.API_TOKEN);
 
-// Example of extracting first page from PDF and then chaining conversion PDF page to JPG.
-// https://www.convertapi.com/pdf-to-extract
+// Example of converting the first page of a PDF to a JPG thumbnail.
 // https://www.convertapi.com/pdf-to-jpg
 
 var dir = require('os').tmpdir();
 
-var pdfResultPromise = convertapi.convert('extract', {
-  File: './examples/files/test.pdf',
-  PageRange: 1
-});
-
 convertapi.convert('jpg', {
-    File: pdfResultPromise,
-    ScaleImage: true,
-    ScaleProportions: true,
+    File: './examples/files/test.pdf',
+    PageRange: 1,
     ImageHeight: 300,
     ImageWidth: 300
   })

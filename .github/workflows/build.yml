@@ -64,12 +64,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      # The examples catch and print their own errors, so this step shows they run against the built lib
-      # rather than gating the merge.
+      # The examples call the production API and catch and print their own errors, so the preload points
+      # them at CONVERT_API_BASE_URI and any printed error fails the step.
       - name: Run the examples
         env:
           API_TOKEN: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
-        run: npm run test:examples
+        run: |
+          set -euo pipefail
+          node --require ./.github/examples-base-uri.js examples/ 2>&1 | tee examples.log
+          if grep -q '^Error' examples.log; then
+            echo "::error::An example failed, see the errors above"
+            exit 1
+          fi
 
   build:
     name: build
