@@ -1,0 +1,32 @@
+# Weekly dependency updates, each opened as a pull request against main that must pass the `build` check
+# and is merged like any other change (merge commit). Merging releases nothing: a new npm version still
+# needs a GitHub Release (see RELEASING.md).
+version: 2
+updates:
+  # The workflows pin every action to a commit SHA with a `# vX.Y.Z` comment; Dependabot updates both.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
+    labels: [dependencies]
+
+  # A bump in "dependencies" raises the minimum version every consumer gets, so it belongs in the
+  # CHANGELOG of the next release. Dev dependencies only affect the build.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      npm-minor-and-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: deps
+    labels: [dependencies]
+    open-pull-requests-limit: 5

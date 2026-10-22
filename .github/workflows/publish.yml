@@ -1,21 +1,229 @@
-name: Publish package to npmjs
+name: Publish
+run-name: Publishing convertapi ${{ github.event.release.tag_name }} to npm
+
+# A release is a GitHub Release, never a merge. Merging to main only builds (build.yml); publishing the
+# Release v{semver} runs this file, which tests and builds that tag's commit with the tag's version and
+# publishes it to npm with provenance. npm versions are public and permanent - a published version can be
+# deprecated but never replaced - so nothing here retries, overwrites or skips a duplicate.
+#
+#   gh release create v1.15.1 --target main --generate-notes            -> convertapi 1.15.1 (latest)
+#   gh release create v1.16.0-beta.1 --target main --prerelease ...     -> convertapi 1.16.0-beta.1 (next)
+#
+# A stable version must be a commit on main. A pre-release may be any commit, so a branch can be tried
+# out as a preview package before it is merged.
 on:
   release:
     types: [published]
+
+permissions:
+  contents: read
+
+env:
+  # Only this account may publish a Release that reaches npm. GitHub cannot express this as a permission
+  # on the Team plan, so it is checked here; the real controls are the v* tag ruleset (only repository
+  # admins create v* tags) and the npm environment, which accepts only v* tags.
+  PUBLISHER: tomasr78
+  PACKAGE: convertapi
+  CONVERT_API_BASE_URI: https://stag-v2.convertapi.com/
+
 jobs:
-  build:
+  publish:
+    name: publish
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/convertapi/v/${{ steps.tag.outputs.version }}
+    concurrency:
+      group: publish-npm
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      # For npm Trusted Publishing, which trades this run's OIDC token for a short-lived publish token,
+      # and for the provenance statement, which is signed with it.
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v3
+      - name: Check who published the release
+        run: |
+          # A re-run keeps GITHUB_ACTOR as the original user; GITHUB_TRIGGERING_ACTOR is whoever pressed
+          # "Re-run", so both must be the publisher or anyone with write access could replay a release.
+          if [ "$GITHUB_ACTOR" != "$PUBLISHER" ] || [ "${GITHUB_TRIGGERING_ACTOR:-$GITHUB_ACTOR}" != "$PUBLISHER" ]; then
+            echo "::error::Only $PUBLISHER may publish to npm - this release was published by $GITHUB_ACTOR and run by ${GITHUB_TRIGGERING_ACTOR:-$GITHUB_ACTOR}."
+            exit 1
+          fi
+          echo "Published by $GITHUB_ACTOR"
+
+      # The release event runs this file from the tag, so the workflow and the code come from the same commit.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Node 24 ships npm 11, which Trusted Publishing needs. No dependency cache: a publishing job must
+      # not restore anything another run could have written.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Check the tag and the version
+        id: tag
         env:
-          CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_SECRET }}
-      - run: npm publish
+          TAG: ${{ github.event.release.tag_name }}
+          PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          set -euo pipefail
+          # SemVer 2.0 without build metadata (npm drops "+..." and it would only confuse).
+          SEMVER='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+          if ! [[ "$TAG" =~ $SEMVER ]]; then
+            echo "::error::Tag '$TAG' is not v{major}.{minor}.{patch} or v{major}.{minor}.{patch}-{pre-release}, e.g. v1.15.1 or v1.16.0-beta.1"
+            exit 1
+          fi
+          if [ "$GITHUB_REF" != "refs/tags/$TAG" ]; then
+            echo "::error::The run is on $GITHUB_REF, not on the release tag refs/tags/$TAG"
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          SHA=$(git rev-parse "refs/tags/$TAG^{commit}")
+          if [ "$(git rev-parse HEAD)" != "$SHA" ]; then
+            echo "::error::Checked out $(git rev-parse HEAD), but $TAG points at $SHA"
+            exit 1
+          fi
+
+          # The GitHub "pre-release" tick and the version must agree, so a preview cannot become the
+          # package's latest version by a forgotten tick, and a stable version cannot hide as a pre-release.
+          if [[ "$VERSION" == *-* ]]; then
+            if [ "$PRERELEASE" != true ]; then
+              echo "::error::$TAG is a pre-release version, so the GitHub Release must be marked as a pre-release (gh release create --prerelease)"
+              exit 1
+            fi
+            DIST_TAG=next
+          else
+            if [ "$PRERELEASE" = true ]; then
+              echo "::error::$TAG is a stable version, but the GitHub Release is marked as a pre-release. Use a pre-release version such as ${TAG}-beta.1, or untick pre-release."
+              exit 1
+            fi
+            if ! git merge-base --is-ancestor "$SHA" origin/main; then
+              echo "::error::$TAG ($SHA) is not on main. Stable versions are released from main only; release a branch as a pre-release instead."
+              exit 1
+            fi
+            DIST_TAG=latest
+          fi
+
+          # The registry lists every version ever published, deprecated ones included.
+          META=$(curl -fsS --retry 3 "https://registry.npmjs.org/$PACKAGE")
+          if jq -e --arg v "$VERSION" '.versions | has($v)' <<<"$META" >/dev/null || \
+             jq -e --arg v "$VERSION" '.time | has($v)' <<<"$META" >/dev/null; then
+            echo "::error::$PACKAGE $VERSION already exists on npm (or was unpublished) and can never be published again. Release the next version instead."
+            exit 1
+          fi
+          # A stable version below the current latest (a backport) must not take the `latest` dist-tag,
+          # or new installs would go back to it.
+          LATEST=$(jq -r '."dist-tags".latest // empty' <<<"$META")
+          if [ "$DIST_TAG" = latest ] && [ -n "$LATEST" ] && \
+             [ "$(printf '%s\n%s\n' "$LATEST" "$VERSION" | sort -V | tail -n1)" != "$VERSION" ]; then
+            echo "::warning::$VERSION is lower than the latest $LATEST, so it is published under the dist-tag 'maintenance' and new installs keep getting $LATEST."
+            DIST_TAG=maintenance
+          fi
+
+          {
+            echo "version=$VERSION"
+            echo "sha=$SHA"
+            echo "dist-tag=$DIST_TAG"
+          } >> "$GITHUB_OUTPUT"
+          echo "Publishing $PACKAGE $VERSION from $SHA under the dist-tag $DIST_TAG"
+
+      # --ignore-scripts here and below: no lifecycle script runs in a job that can publish.
+      - name: Install
+        run: npm ci --ignore-scripts
+
+      - name: Audit the runtime dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Lint and test
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_SECRET }}
+          CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
+        # The staging API answers 503 (no healthy upstream) in bursts of up to a minute, so each test gets
+        # two immediate retries and the whole suite up to three attempts, 30 s apart.
+        run: |
+          set -euo pipefail
+          npm run lint
+          for attempt in 1 2 3; do
+            npm run cover -- --retries 2 && exit 0
+            echo "::warning::Attempt $attempt: the tests failed, see above"
+            sleep 30
+          done
+          echo "::error::The tests failed three times"
+          exit 1
+
+      - name: Set the version and build
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm version "$VERSION" --no-git-tag-version --allow-same-version --ignore-scripts
+          npm run build
+
+      - name: Check the package
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir out
+          npm pack --ignore-scripts --pack-destination out
+          TGZ="out/$PACKAGE-$VERSION.tgz"
+          test -f "$TGZ"
+          PKG_JSON=$(tar -xzOf "$TGZ" package/package.json)
+          [ "$(jq -r .version <<<"$PKG_JSON")" = "$VERSION" ] || { echo "::error::$TGZ does not carry version $VERSION"; exit 1; }
+          tar -tzf "$TGZ" | grep -qx 'package/lib/index.js' || { echo "::error::$TGZ has no lib/index.js"; exit 1; }
+          tar -tzf "$TGZ"
+
+      # Trusted Publishing: once npmjs.com trusts this repository, publish.yml and the npm environment,
+      # setting the repository variable NPM_TRUSTED_PUBLISHING to true publishes with a short-lived OIDC
+      # token instead of the NPM_TOKEN secret, which can then be deleted. Both ways publish with provenance.
+      # No --force and no retry: a version that already exists must fail loudly, never pass as published.
+      - name: Publish to npm
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+          DIST_TAG: ${{ steps.tag.outputs.dist-tag }}
+          NODE_AUTH_TOKEN: ${{ vars.NPM_TRUSTED_PUBLISHING != 'true' && secrets.NPM_TOKEN || '' }}
+          TRUSTED: ${{ vars.NPM_TRUSTED_PUBLISHING == 'true' }}
+        run: |
+          set -euo pipefail
+          if [ "$TRUSTED" != true ] && [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::error::No npm credentials: set up Trusted Publishing (NPM_TRUSTED_PUBLISHING) or the NPM_TOKEN secret"
+            exit 1
+          fi
+          npm publish "./out/$PACKAGE-$VERSION.tgz" --provenance --access public --tag "$DIST_TAG" --ignore-scripts
+
+      # The registry usually serves a new version within seconds. A slow registry is not a failed release,
+      # so this only warns.
+      - name: Wait for npm to serve the package
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          set -uo pipefail
+          for _ in $(seq 1 20); do
+            if curl -fsS "https://registry.npmjs.org/$PACKAGE/$VERSION" >/dev/null 2>&1; then
+              echo "$PACKAGE $VERSION is available on npm"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::warning::$PACKAGE $VERSION was published but npm has not served it after 5 minutes. Check https://www.npmjs.com/package/$PACKAGE/v/$VERSION"
+
+      - name: Summary
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+          SHA: ${{ steps.tag.outputs.sha }}
+          DIST_TAG: ${{ steps.tag.outputs.dist-tag }}
+          AUTH: ${{ vars.NPM_TRUSTED_PUBLISHING == 'true' && 'Trusted Publishing' || 'NPM_TOKEN secret' }}
+        run: |
+          {
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Package | [\`$PACKAGE $VERSION\`](https://www.npmjs.com/package/$PACKAGE/v/$VERSION) (dist-tag \`$DIST_TAG\`) |"
+            echo "| Commit | \`$SHA\` |"
+            echo "| Published with | $AUTH, with provenance |"
+          } >> "$GITHUB_STEP_SUMMARY"

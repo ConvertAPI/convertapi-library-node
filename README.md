@@ -1,7 +1,7 @@
 # ConvertAPI Node.js Client
 
 [![npm version](https://badge.fury.io/js/convertapi.svg)](https://badge.fury.io/js/convertapi)
-[![Build Status](https://github.com/ConvertAPI/convertapi-node/actions/workflows/main.yml/badge.svg)](https://github.com/ConvertAPI/convertapi-node/actions)
+[![Build Status](https://github.com/ConvertAPI/convertapi-library-node/actions/workflows/build.yml/badge.svg)](https://github.com/ConvertAPI/convertapi-library-node/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Convert your files with our online file conversion API
@@ -152,12 +152,12 @@ var convertapi = require('../lib')(process.env.API_TOKEN, { baseUri: 'https://eu
 
 ### More examples
 
-Find more advanced examples in the [examples/](https://github.com/ConvertAPI/convertapi-node/tree/master/examples) folder.
+Find more advanced examples in the [examples/](https://github.com/ConvertAPI/convertapi-library-node/tree/main/examples) folder.
 
 ## Development Commands
 
 - `npm run clean` - Remove the `lib/` directory
-- `npm test` - Run tests with linting and coverage results.
+- `npm test` - Run tests with linting and coverage results. The tests call the API: set `CONVERT_API_SECRET` to your API token, and `CONVERT_API_BASE_URI` to use another API host.
 - `npm run test:only` - Run tests without linting or coverage.
 - `npm run test:watch` - You can even re-run tests on file changes!
 - `npm run test:prod` - Run tests with minified code.
@@ -165,11 +165,12 @@ Find more advanced examples in the [examples/](https://github.com/ConvertAPI/con
 - `npm run lint` - Run ESlint with airbnb-config
 - `npm run cover` - Get coverage report for your code.
 - `npm run build` - Babel will transpile ES6 => ES5 and minify the code.
-- `npm run prepublish` - Hook for npm. Do all the checks before publishing your module.
+
+Releases are published to npm by GitHub Actions, see [RELEASING.md](RELEASING.md).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ConvertAPI/convertapi-node. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ConvertAPI/convertapi-library-node. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

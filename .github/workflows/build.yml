@@ -1,0 +1,166 @@
+name: Build
+run-name: >-
+  ${{ github.event_name == 'pull_request' && format('Checking that #{0} builds', github.event.pull_request.number)
+   || format('Building {0}', github.ref_name) }}
+
+# Trunk-based: main is the only long-lived branch. Every pull request and every push to main lints, tests
+# and builds the package on each supported Node.js LTS line and packs it, but nothing is published here:
+# this is a public npm package, and npm versions are permanent, so a release is a deliberate act -
+# publishing a GitHub Release v{semver}, which runs publish.yml. The required status check is the last
+# job's name, `build`, which passes only when every Node.js version passed.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push to the same pull request cancels the older build; builds of main never cancel each other.
+concurrency:
+  group: build-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  # The tests and the examples convert real files, so they run against the staging API with a staging
+  # token. Pull requests from forks get no secrets, so their tests fail until an admin merges them.
+  CONVERT_API_BASE_URI: https://stag-v2.convertapi.com/
+
+jobs:
+  test:
+    name: test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      # --ignore-scripts: no dependency runs install scripts on the runner.
+      - name: Install
+        run: npm ci --ignore-scripts
+
+      - name: Lint and test
+        env:
+          CONVERT_API_SECRET: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
+        run: |
+          if [ -z "$CONVERT_API_SECRET" ]; then
+            echo "::error::The CONVERTAPI_STAGING_TOKEN secret is not available to this run (a pull request from a fork gets no secrets)"
+            exit 1
+          fi
+          # The staging API answers 503 (no healthy upstream) in bursts of up to a minute, so each test gets
+          # two immediate retries and the whole suite up to three attempts, 30 s apart.
+          npm run lint
+          for attempt in 1 2 3; do
+            npm run cover -- --retries 2 && exit 0
+            echo "::warning::Attempt $attempt: the tests failed, see above"
+            sleep 30
+          done
+          echo "::error::The tests failed three times"
+          exit 1
+
+      - name: Build
+        run: npm run build
+
+      # The examples call the production API and catch and print their own errors, so the preload points
+      # them at CONVERT_API_BASE_URI and any printed error fails an attempt. Up to three attempts, 30 s apart,
+      # because the staging API answers 503 in bursts.
+      - name: Run the examples
+        env:
+          API_TOKEN: ${{ secrets.CONVERTAPI_STAGING_TOKEN }}
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            node --require ./.github/examples-base-uri.js examples/ 2>&1 | tee examples.log
+            if ! grep -q '^Error' examples.log; then
+              exit 0
+            fi
+            echo "::warning::Attempt $attempt: an example failed, see the errors above"
+            sleep 30
+          done
+          echo "::error::The examples failed three times"
+          exit 1
+
+  build:
+    name: build
+    needs: test
+    # Runs even when a test job failed, so that the required check reports a failure instead of being
+    # skipped (a skipped required check counts as passed).
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check every Node.js version passed
+        env:
+          RESULT: ${{ needs.test.result }}
+        run: |
+          if [ "$RESULT" != success ]; then
+            echo "::error::The tests did not pass on every Node.js version ($RESULT)"
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci --ignore-scripts
+
+      # A high or critical advisory in what consumers install (dev dependencies are not shipped) fails the
+      # build rather than reaching a release.
+      - name: Audit the runtime dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Build
+        run: npm run build
+
+      # A pre-release version that sorts below any real release and names the run, so a package
+      # downloaded from this run can be tried out but never mistaken for a published one.
+      - name: Pack
+        id: pack
+        env:
+          RUN: ${{ github.run_number }}
+          SHORT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          VERSION="0.0.0-ci.$RUN.g${SHORT_SHA:0:7}"
+          npm version "$VERSION" --no-git-tag-version --ignore-scripts
+          mkdir out
+          npm pack --ignore-scripts --pack-destination out
+          test -f "out/convertapi-$VERSION.tgz"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: convertapi-${{ steps.pack.outputs.version }}
+          path: out/
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Summary
+        env:
+          VERSION: ${{ steps.pack.outputs.version }}
+        run: |
+          {
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Package | \`convertapi $VERSION\` (artifact only, not published) |"
+            echo "| Dependencies | $(jq -r '.dependencies | to_entries | map("\(.key) \(.value)") | join(", ")' package.json) |"
+            echo "| Files | $(tar -tzf "out/convertapi-$VERSION.tgz" | wc -l) |"
+          } >> "$GITHUB_STEP_SUMMARY"
