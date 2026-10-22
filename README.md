@@ -144,7 +144,7 @@ convertapi
 
 ### Alternative domain
 
-Set `base_uri` parameter to use other service domains. Dedicated to the region [domain list](https://www.convertapi.com/doc/servers-location).
+Set `baseUri` parameter to use other service domains. Dedicated to the region [domain list](https://www.convertapi.com/doc/servers-location).
 
 ```js
 var convertapi = require('../lib')(process.env.API_TOKEN, { baseUri: 'https://eu-v2.convertapi.com/' });
