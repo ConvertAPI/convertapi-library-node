@@ -3,6 +3,15 @@
 All notable changes to the `convertapi` npm package. Versions follow [Semantic Versioning](https://semver.org/);
 each one is a GitHub Release `v{version}` (see [RELEASING.md](RELEASING.md)).
 
+## 1.16.0 - 2026-10-26
+
+- TypeScript: `Result.files` is now `ResultFile[]` and `saveFiles()` returns `Promise<string[]>`. They were
+  typed as one-element tuples, so `files[1]` or `files.length === 2` failed to compile for conversions that
+  return several files (#94, #95). Nothing changes at runtime. TypeScript code that spells out the old
+  `[ResultFile]` / `[string]` types, or uses `noUncheckedIndexedAccess`, may need a small update.
+- README: the base URI option is `baseUri` (#90).
+- Development: tests run on chai 6 and mocha 12 with c8 coverage; dev dependencies updated.
+
 ## 1.15.2 - 2026-10-20
 
 The first release from the new pipeline. v1.15.1 was tagged but never reached npm: its publish workflow
