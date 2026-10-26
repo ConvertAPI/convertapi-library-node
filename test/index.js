@@ -1,11 +1,14 @@
 import fs from 'fs';
-import chai from 'chai';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import ConvertAPI from '../src';
 
-chai.use(require('chai-as-promised'));
-chai.use(require('chai-fs'));
+use(chaiAsPromised);
 
-const expect = chai.expect;
+const expectNonEmptyFile = (path) => {
+  expect(fs.statSync(path).size).to.be.above(0);
+};
+
 // CONVERT_API_BASE_URI points the tests at another API host (CI uses staging); unset means the default.
 const baseUri = process.env.CONVERT_API_BASE_URI;
 const api = new ConvertAPI(process.env.CONVERT_API_SECRET, { baseUri });
@@ -49,17 +52,17 @@ describe('ConvertAPI', () => {
 
     const files = await result.saveFiles('/tmp');
 
-    expect(files[0]).to.be.a.file().and.not.empty;
+    expectNonEmptyFile(files[0]);
 
     files.map(file => fs.unlinkSync(file));
 
     // test saving multiple times
     const file1 = await result.files[0].save('/tmp');
-    expect(file1).to.be.a.file().and.not.empty;
+    expectNonEmptyFile(file1);
     fs.unlinkSync(file1);
 
     const file2 = await result.files[0].save('/tmp/convertapi-node-test-' + process.hrtime().join(''));
-    expect(file2).to.be.a.file().and.not.empty;
+    expectNonEmptyFile(file2);
     fs.unlinkSync(file2);
   });
 
@@ -130,7 +133,7 @@ describe('ConvertAPI', () => {
 
     const promise = api.convert('pdf', params, 'web', -10);
 
-    expect(promise).to.be.rejectedWith(/Parameter validation error/);
+    return expect(promise).to.be.rejectedWith(/Parameter validation error/);
   });
 
   it('should handle client errors', () => {
@@ -140,7 +143,7 @@ describe('ConvertAPI', () => {
 
     const promise = fastApi.convert('pdf', params);
 
-    expect(promise).to.be.rejectedWith(/timeout/);
+    return expect(promise).to.be.rejectedWith(/timeout/);
   });
 
   it('fetches user info', () => {

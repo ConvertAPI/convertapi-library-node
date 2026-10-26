@@ -11,7 +11,7 @@
     "test:only": "mocha --require babel-core/register --require babel-polyfill --recursive --timeout 15000",
     "test:watch": "npm test -- --watch",
     "test:examples": "node examples/",
-    "cover": "istanbul cover _mocha -- --require babel-core/register --require babel-polyfill --recursive --timeout 15000",
+    "cover": "c8 --reporter=text --reporter=lcov mocha --require babel-core/register --require babel-polyfill --recursive --timeout 15000",
     "lint": "eslint src test",
     "build": "cross-env BABEL_ENV=production babel src --out-dir lib",
     "prepublishOnly": "echo 'convertapi is published by a GitHub Release, see RELEASING.md' && exit 1"
@@ -50,17 +50,16 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-minify": "^0.5.2",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^ 7.1.1",
-    "chai-fs": "^2.0.0",
+    "c8": "^12.0.0",
+    "chai": "^6.3.0",
+    "chai-as-promised": "^8.0.2",
     "cross-env": "^10.1.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "~17.0.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
-    "istanbul": "^1.0.0-alpha",
-    "mocha": "^10.2.0",
+    "mocha": "^12.0.3",
     "rimraf": "^2.6.2"
   }
 }
