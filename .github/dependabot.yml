@@ -30,3 +30,10 @@ updates:
       prefix: deps
     labels: [dependencies]
     open-pull-requests-limit: 5
+    # eslint-config-airbnb supports ESLint 8 at most, so ESLint 9+ means a move to flat config without the
+    # airbnb ruleset. That is a lint-style decision for its own pull request, not a dependency bump.
+    ignore:
+      - dependency-name: eslint
+        update-types: [version-update:semver-major]
+      - dependency-name: eslint-config-airbnb
+        update-types: [version-update:semver-major]
