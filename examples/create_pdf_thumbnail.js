@@ -12,7 +12,8 @@ convertapi.convert('jpg', {
     File: './examples/files/test.pdf',
     PageRange: 1,
     ImageHeight: 300,
-    ImageWidth: 300
+    ImageWidth: 300,
+    FitToSize: true
   })
   .then(function(jpgResult) {
     return jpgResult.saveFiles(dir);
