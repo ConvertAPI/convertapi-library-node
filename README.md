@@ -154,6 +154,16 @@ var convertapi = require('../lib')(process.env.API_TOKEN, { baseUri: 'https://eu
 
 Find more advanced examples in the [examples/](https://github.com/ConvertAPI/convertapi-library-node/tree/main/examples) folder.
 
+- [conversion_chaining.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/conversion_chaining.js) - Chain two conversions: PDF to JPG images, then the images to a ZIP
+- [convert_base64_content.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/convert_base64_content.js) - Convert base64-encoded content to PDF using a buffer and a stream
+- [convert_stream.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/convert_stream.js) - Convert a readable file stream (DOCX) to PDF
+- [convert_url_to_pdf.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/convert_url_to_pdf.js) - Convert a web page URL to PDF
+- [convert_word_to_pdf_and_png.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/convert_word_to_pdf_and_png.js) - Convert one Word DOCX file to PDF and to PNG, uploading it only once
+- [create_pdf_thumbnail.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/create_pdf_thumbnail.js) - Turn the first page of a PDF into a JPG thumbnail
+- [get_result_file_stream.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/get_result_file_stream.js) - Convert a web page to PDF and read the result file into a stream
+- [retrieve_user_information.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/retrieve_user_information.js) - Retrieve your ConvertAPI account information
+- [split_and_merge_pdf.js](https://github.com/ConvertAPI/convertapi-library-node/blob/main/examples/split_and_merge_pdf.js) - Split a PDF and merge its first and last pages into a new PDF
+
 ## Development Commands
 
 - `npm run clean` - Remove the `lib/` directory
