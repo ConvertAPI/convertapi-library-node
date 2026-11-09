@@ -4,9 +4,9 @@
 var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Example of converting Web Page URL to PDF and reading file data as string
-// https://www.convertapi.com/web-to-pdf
+// https://www.convertapi.com/html-to-pdf
 
-var fromFormat = 'web';
+var fromFormat = 'html';
 var conversionTimeout = 180;
 var https = require('https');
 var Stream = require('stream').Transform;

@@ -12,7 +12,7 @@ console.log("Converting PDF to JPG and compressing result files with ZIP\n");
 
 convertapi.convert('jpg', { File: './examples/files/test.pdf' })
   .then(function(jpgResult) {
-    return convertapi.convert('zip', { Files: jpgResult });
+    return convertapi.convert('zip', { Files: jpgResult }, 'file');
   })
   .then(function(zipResult) {
     return zipResult.saveFiles(dir);

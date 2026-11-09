@@ -4,10 +4,10 @@
 var convertapi = require('../lib')(process.env.API_TOKEN);
 
 // Example of converting Web Page URL to PDF file
-// https://www.convertapi.com/web-to-pdf
+// https://www.convertapi.com/html-to-pdf
 
 var dir = require('os').tmpdir();
-var fromFormat = 'web';
+var fromFormat = 'html';
 var conversionTimeout = 180;
 
 var params = {
