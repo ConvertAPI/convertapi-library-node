@@ -176,7 +176,10 @@ jobs:
           test -f "$TGZ"
           PKG_JSON=$(tar -xzOf "$TGZ" package/package.json)
           [ "$(jq -r .version <<<"$PKG_JSON")" = "$VERSION" ] || { echo "::error::$TGZ does not carry version $VERSION"; exit 1; }
-          tar -tzf "$TGZ" | grep -qx 'package/lib/index.js' || { echo "::error::$TGZ has no lib/index.js"; exit 1; }
+          # The listing goes to a file first. Piped into grep -q, tar can still be writing when grep exits
+          # at its first match; tar then fails ("stdout: write error") and pipefail reports a missing file.
+          tar -tzf "$TGZ" > "$RUNNER_TEMP/tgz-files.txt"
+          grep -qx 'package/lib/index.js' "$RUNNER_TEMP/tgz-files.txt" || { echo "::error::$TGZ has no lib/index.js"; exit 1; }
           tar -tzf "$TGZ"
 
       # Trusted Publishing: once npmjs.com trusts this repository, publish.yml and the npm environment,
