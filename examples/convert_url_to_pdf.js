@@ -11,7 +11,7 @@ var fromFormat = 'html';
 var conversionTimeout = 180;
 
 var params = {
-  Url: 'https://en.wikipedia.org/wiki/Data_conversion',
+  Url: 'https://cdn.convertapi.com/public/files/demo',
   FileName: 'web-example'
 };
 
