@@ -60,7 +60,7 @@ const convertapi = new ConvertAPI('api-token', { conversionTimeout: 60 });
 ### File conversion
 
 Convert file to PDF example. All supported file formats and options can be found
-[here](https://www.convertapi.com/conversions).
+[here](https://www.convertapi.com/api).
 
 ```javascript
 convertapi.convert('pdf', { File: '/path/to/my_file.docx' })
@@ -106,7 +106,7 @@ var resultPromise = convertapi.convert('pdf', { File: 'https://website/my_file' 
 #### Additional conversion parameters
 
 ConvertAPI accepts additional conversion parameters depending on selected formats. All conversion
-parameters and explanations can be found [here](https://www.convertapi.com/conversions).
+parameters and explanations can be found [here](https://www.convertapi.com/api).
 
 ```javascript
 var resultPromise = convertapi.convert(
@@ -114,14 +114,14 @@ var resultPromise = convertapi.convert(
   {
     File: '/path/to/my_file.docx',
     PageRange: '1-10',
-    PdfResolution: '150',
+    Pdfa: true,
   }
 );
 ```
 
 ### User information
 
-You can always check your conversion counts by fetching [user information](https://www.convertapi.com/doc/user).
+You can always check your conversion counts by fetching [user information](https://www.convertapi.com/docs/user-information).
 
 ```javascript
 convertapi.getUser().then(function(info) {
@@ -144,10 +144,10 @@ convertapi
 
 ### Alternative domain
 
-Set `baseUri` parameter to use other service domains. Dedicated to the region [domain list](https://www.convertapi.com/doc/servers-location).
+Set `baseUri` parameter to use other service domains. Dedicated to the region [domain list](https://www.convertapi.com/docs/servers-location).
 
 ```js
-var convertapi = require('../lib')(process.env.API_TOKEN, { baseUri: 'https://eu-v2.convertapi.com/' });
+var convertapi = require('convertapi')('api-token', { baseUri: 'https://eu-v2.convertapi.com/' });
 ```
 
 ### More examples
@@ -180,7 +180,7 @@ Releases are published to npm by GitHub Actions, see [RELEASING.md](RELEASING.md
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ConvertAPI/convertapi-library-node. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ConvertAPI/convertapi-library-node. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](https://www.contributor-covenant.org) code of conduct.
 
 ## License
 
